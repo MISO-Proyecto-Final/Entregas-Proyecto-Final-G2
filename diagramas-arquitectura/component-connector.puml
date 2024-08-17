@@ -1,0 +1,52 @@
+@startuml
+package "presentation" {
+    component "customer portal"
+    component "client admin dashboard"
+    component "mobile app"
+}
+
+package "integration" {
+    component "integration service"
+}
+
+package gateway {
+    component "api gateway"
+}
+
+package security {
+    component "authorization service"
+    component "autentication service"
+}
+
+package "business logic" {
+    component "client registration"
+    component "suscription plan management"
+    component "billing management"
+    component "incident process"
+    component analitycs
+    component "generative ia orchestrator"
+}
+
+package data {
+    component "client data"
+    component "customer data"
+    component "plan data"
+    component "billing data"
+    component "incident data"
+    component "analitycs data"
+}
+
+package common {
+    component "notification service"
+    component "email service"
+    component "sms service"
+    component "push notification service"
+    component "logging service"
+    component "monitoring service"
+    component "reporting service"
+    component "file storage service"
+    component "configuration service"
+    component "cache service"
+}
+
+@enduml
