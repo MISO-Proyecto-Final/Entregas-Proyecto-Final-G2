@@ -1,4 +1,4 @@
-@startuml
+@startuml context
 actor "Usuarios Finales" as User
 actor "Empresas Clientes" as Client
 actor "Administradores de ABCall" as Admin

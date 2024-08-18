@@ -1,10 +1,21 @@
 @startuml component-connector
+' #######################################################################
+' # Component Connector
+' #######################################################################
+
+' -----------------------------------------------------------------------
+' - Definir skinparam
+' -----------------------------------------------------------------------
 skinparam packageStyle rectangle
 skinparam component {
     BackgroundColor<<ExternalComponent>> LightBlue
     BorderColor<<ExternalComponent>> DarkBlue
     FontColor<<ExternalComponent>> Black
 }
+
+' #######################################################################
+' PRESENTATION LAYER
+' #######################################################################
 package "presentation" {
     component "customer portal" {
         portout gw_portal_port_out
@@ -17,15 +28,21 @@ package "presentation" {
     }
 }
 
-
     component "integration service" <<ExternalComponent>>{
         portout integration_service_port
     }
 
+' -----------------------------------------------------------------------
+' - NOTAS
+' -----------------------------------------------------------------------
     note top of "integration service"
         "Corresponde en general a los servicios implemetados 
         por los clientes para integrarse con ABCall"
     end note
+
+' #######################################################################
+' GATEWAY LAYER
+' #######################################################################
 
 package gateway {
     component "api gateway" {
@@ -40,11 +57,18 @@ package gateway {
     }
 }
 
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
 interface igwportal
 interface igwadmin
 interface igwmobile
 interface igw_integration
 
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
 gw_portal_port -up- igwportal
 gw_admin_port -up- igwadmin
 gw_mobile_port -up- igwmobile
@@ -57,11 +81,20 @@ gw_mobile_port_out -down-( igwmobile
 gw_integration_port -up- igw_integration
 integration_service_port -down-( igw_integration
 
+' -----------------------------------------------------------------------
+' - NOTAS
+' -----------------------------------------------------------------------
+
 note right of "api gateway" 
     "API Gateway acts as a reverse proxy, routing requests to the appropriate services. 
     It also provides cross-cutting concerns such as authentication, 
     authorization, rate limiting, and logging."
 end note
+
+' #######################################################################
+' ORCHESTRATION LAYER
+' #######################################################################
+
 package Orchestration{
     component "integration" <<mediator>>{
         portin iintegration_port
@@ -117,9 +150,12 @@ package Orchestration{
     }
 }
 
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
 interface iintegration
 iintegration_port -up- iintegration
-
 
 interface iportal
 iportal_port -up- iportal
@@ -130,12 +166,17 @@ iadmin_port -up- iadmin
 interface imobile
 imobile_port -up- imobile
 
-
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
 imobile_port_gw -down-( imobile
 iadmin_port_gw -down-( iadmin
 iportal_port_gw -down-( iportal
 iintegration_port_gw -down-( iintegration
 
+' #######################################################################
+' SECURITY LAYER
+' #######################################################################
 
 package security {
     component "authorization service" {
@@ -146,20 +187,38 @@ package security {
     }
 }
 
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
 interface iauth
 iauth_port -up- iauth
+interface iauthorization
+iauthorization_port -up- iauthorization
+
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
+
+' .......................................................................
+' AUTHENTICATION CONNECTIONS
+' .......................................................................
 iauth_port_im -down-( iauth
 iauth_port_pm -down-( iauth
 iauth_port_adm -down-( iauth
 iauth_port_mm -down-( iauth
 
-
-interface iauthorization
-iauthorization_port -up- iauthorization
+' .......................................................................
+' AUTHORIZATION CONNECTIONS
+' .......................................................................
 iauthorization_port_im -down-( iauthorization
 iauthorization_port_pm -down-( iauthorization
 iauthorization_port_adm -down-( iauthorization
 iauthorization_port_mm -down-( iauthorization
+
+' #######################################################################
+' BUSINESS LOGIC LAYER
+' #######################################################################
 
 package "business logic" {
     component "customer tenant management" {
@@ -235,6 +294,9 @@ package "business logic" {
     }
 }
 
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
 interface icustomer_tenant_management
 customer_tenant_management_port -up- icustomer_tenant_management
 
@@ -255,13 +317,14 @@ generative_ia_orchestrator_port -up- igenerative_ia_orchestrator
 
 interface ianalytics_engine
 analytics_engine_port -up- ianalytics_engine
-/' 
-#########################################################################
 
- 
-#########################################################################
-'/
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
 
+' .......................................................................
+' INTEGRACTION CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #FF5733
 }
@@ -273,6 +336,9 @@ incident_process_port_im -down-( iincident_process
 generative_ia_orchestrator_port_im -down-( igenerative_ia_orchestrator
 analytics_engine_port_im -down-( ianalytics_engine
 
+' .......................................................................
+' PORTAL CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #58FF33
 }
@@ -284,6 +350,9 @@ incident_process_port_pm -down-( iincident_process
 generative_ia_orchestrator_port_pm -down-( igenerative_ia_orchestrator
 analytics_engine_port_pm -down-( ianalytics_engine
 
+' .......................................................................
+' ADMIN CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #3347FF
 }
@@ -295,6 +364,9 @@ incident_process_port_adm -down-( iincident_process
 generative_ia_orchestrator_port_adm -down-( igenerative_ia_orchestrator
 analytics_engine_port_adm -down-( ianalytics_engine
 
+' .......................................................................
+' MOBILE CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #FFB133
 }
@@ -310,6 +382,11 @@ analytics_engine_port_mm -down-( ianalytics_engine
 skinparam class {
   ArrowColor #000000
 }
+
+'-----------------------------------------------------------------------
+' - NOTAS
+'-----------------------------------------------------------------------
+
 note bottom of "customer tenant management"
     "customer tenant management" es un componente que 
     se encarga de gestionar los 
@@ -326,11 +403,18 @@ note bottom of "suscription plan management"
     Selección de planes y configuracion de planes por cliente.
 end note
 
+' #######################################################################
+' COMMON SERVICES
+' #######################################################################
+
 package common {
     component catalog_service {
         portin catalog_service_port
     }
 
+' -----------------------------------------------------------------------
+' - COMPONENTES DE NOTIFICACION
+' -----------------------------------------------------------------------
     component "notification service" {
         portin notification_service_port
         portout email_service_port_out
@@ -362,6 +446,9 @@ package common {
     push_notification_service_port -up- inotification_push_notification
     push_notification_service_port_out -down-( inotification_push_notification
 
+' -----------------------------------------------------------------------
+' - OTROS SERVICIOS COMUNES
+' -----------------------------------------------------------------------
     component "logging service" {
         portin logging_service_port
     }
@@ -385,12 +472,12 @@ package common {
     }
 }
 
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
 interface icatalog_service
 catalog_service_port -up- icatalog_service
-catalog_service_port_im -down-( icatalog_service
-catalog_service_port_pm -down-( icatalog_service
-catalog_service_port_adm -down-( icatalog_service
-catalog_service_port_mm -down-( icatalog_service
 
 interface ilogging
 logging_service_port -up- ilogging
@@ -413,7 +500,19 @@ cache_service_port -up- icache
 interface inotification
 notification_service_port -up- inotification
 
-' Custom colors for each connection
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
+
+catalog_service_port_im -down-( icatalog_service
+catalog_service_port_pm -down-( icatalog_service
+catalog_service_port_adm -down-( icatalog_service
+catalog_service_port_mm -down-( icatalog_service
+
+
+' .......................................................................
+' LOGGING CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #FF5733
 }
@@ -425,6 +524,9 @@ ilogging_ip .down.> ilogging
 ilogging_gio .down.> ilogging
 ilogging_ae .down.> ilogging
 
+' .......................................................................
+' MONITORING CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #33FF57
 }
@@ -436,6 +538,9 @@ imonitoring_ip .down.> imonitoring
 imonitoring_gio .down.> imonitoring
 imonitoring_ae .down.> imonitoring
 
+' .......................................................................
+' REPORTING CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #3357FF
 }
@@ -447,6 +552,9 @@ ireporting_ip .down.> ireporting
 ireporting_gio .down.> ireporting
 ireporting_ae .down.> ireporting
 
+' .......................................................................
+' FILE STORAGE CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #FF33A1
 }
@@ -457,6 +565,10 @@ ifile_storage_bm -down-( ifile_storage
 ifile_storage_ip -down-( ifile_storage
 ifile_storage_gio -down-( ifile_storage
 ifile_storage_ae -down-( ifile_storage
+
+' .......................................................................
+' CONFIGURATION CONNECTIONS
+' .......................................................................
 
 skinparam class {
   ArrowColor #33FFF7
@@ -469,6 +581,9 @@ iconfiguration_ip -down-( iconfiguration
 iconfiguration_gio -down-( iconfiguration
 iconfiguration_ae -down-( iconfiguration
 
+' .......................................................................
+' CACHE CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #FFDD33
 }
@@ -480,6 +595,9 @@ icache_ip -down-( icache
 icache_gio -down-( icache
 icache_ae -down-( icache
 
+' .......................................................................
+' NOTIFICATION CONNECTIONS
+' .......................................................................
 skinparam class {
   ArrowColor #9933FF
 }
@@ -491,5 +609,7 @@ inotification_bm .down.> inotification
 inotification_ip .down.> inotification 
 inotification_gio .down.> inotification 
 inotification_ae .down.> inotification 
+
+' #######################################################################
 
 @enduml
