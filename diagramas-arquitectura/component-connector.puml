@@ -132,12 +132,44 @@ package common {
     push_notification_service_port -up- inotification_push_notification
     push_notification_service_port_out -down-( inotification_push_notification
 
-    component "logging service"
-    component "monitoring service"
-    component "reporting service"
-    component "file storage service"
-    component "configuration service"
-    component "cache service"
+    component "logging service" {
+        portin logging_service_port
+    }
+
+    component "monitoring service"{
+        portin monitoring_service_port
+    }
+
+    component "reporting service"{
+        portin reporting_service_port
+    }
+    component "file storage service"{
+        portin file_storage_service_port
+    }
+    component "configuration service"{
+        portin configuration_service_port
+    }
+    component "cache service"{
+        portin cache_service_port
+    }
 }
+
+interface ilogging
+logging_service_port -up- ilogging
+
+interface imonitoring
+monitoring_service_port -up- imonitoring
+
+interface ireporting
+reporting_service_port -up- ireporting
+
+interface ifile_storage
+file_storage_service_port -up- ifile_storage
+
+interface iconfiguration
+configuration_service_port -up- iconfiguration
+
+interface icache
+cache_service_port -up- icache
 
 @enduml
