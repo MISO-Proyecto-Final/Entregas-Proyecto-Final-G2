@@ -12,7 +12,7 @@ package "Gestión de Suscripciones" {
 }
 
 package "Gestión de Incidentes" {
-    Incidente "1" -- "*" Cliente
+  Incidente "*" -- "*" Cliente
   Incidente "1" -- "0..1" Llamada
   Incidente "1" -- "*" Mensaje
 }
