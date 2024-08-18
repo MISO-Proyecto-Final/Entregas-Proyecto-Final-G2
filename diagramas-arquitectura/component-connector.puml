@@ -33,17 +33,10 @@ package gateway {
         portin gw_portal_port
         portin gw_admin_port
         portin gw_mobile_port
-        portout iauth_port_gw
-        portout iauthorization_port_gw
-        portout icustomer_tenant_management_port_gw
-        portout suscription_plan_management_port_gw
-        portout user_management_port_gw
-        portout billing_management_port_gw
-        portout incident_process_port_gw
-        portout analytics_port_gw
-        portout generative_ia_orchestrator_port_gw
-        portout analytics_engine_port_gw
-        portout catalog_service_port_gw
+        portout iintegration_port_gw
+        portout iportal_port_gw
+        portout imobile_port_gw
+        portout iadmin_port_gw
     }
 }
 
@@ -55,6 +48,7 @@ interface igw_integration
 gw_portal_port -up- igwportal
 gw_admin_port -up- igwadmin
 gw_mobile_port -up- igwmobile
+
 
 gw_portal_port_out -down-( igwportal
 gw_admin_port_out -down-( igwadmin
@@ -68,6 +62,80 @@ note right of "api gateway"
     It also provides cross-cutting concerns such as authentication, 
     authorization, rate limiting, and logging."
 end note
+package Orchestration{
+    component "integration" <<mediator>>{
+        portin iintegration_port
+        portout iauth_port_im
+        portout iauthorization_port_im
+        portout icustomer_tenant_management_port_im
+        portout suscription_plan_management_port_im
+        portout user_management_port_im
+        portout billing_management_port_im
+        portout incident_process_port_im
+        portout generative_ia_orchestrator_port_im
+        portout analytics_engine_port_im
+        portout catalog_service_port_im
+    }
+    component "portal" <<mediator>>{
+        portin iportal_port
+        portout iauth_port_pm
+        portout iauthorization_port_pm
+        portout icustomer_tenant_management_port_pm
+        portout suscription_plan_management_port_pm
+        portout user_management_port_pm
+        portout billing_management_port_pm
+        portout incident_process_port_pm
+        portout generative_ia_orchestrator_port_pm
+        portout analytics_engine_port_pm
+        portout catalog_service_port_pm
+    }
+    component "admin dashboard" <<mediator>>{
+        portin iadmin_port
+        portout iauth_port_adm
+        portout iauthorization_port_adm
+        portout icustomer_tenant_management_port_adm
+        portout suscription_plan_management_port_adm
+        portout user_management_port_adm
+        portout billing_management_port_adm
+        portout incident_process_port_adm
+        portout generative_ia_orchestrator_port_adm
+        portout analytics_engine_port_adm
+        portout catalog_service_port_adm
+    }
+    component mobile <<mediator>> {
+        portin imobile_port
+        portout iauth_port_mm
+        portout iauthorization_port_mm
+        portout icustomer_tenant_management_port_mm
+        portout suscription_plan_management_port_mm
+        portout user_management_port_mm
+        portout billing_management_port_mm
+        portout incident_process_port_mm
+        portout generative_ia_orchestrator_port_mm
+        portout analytics_engine_port_mm
+        portout catalog_service_port_mm
+    }
+}
+
+interface iintegration
+iintegration_port -up- iintegration
+
+
+interface iportal
+iportal_port -up- iportal
+
+interface iadmin
+iadmin_port -up- iadmin
+
+interface imobile
+imobile_port -up- imobile
+
+
+imobile_port_gw -down-( imobile
+iadmin_port_gw -down-( iadmin
+iportal_port_gw -down-( iportal
+iintegration_port_gw -down-( iintegration
+
 
 package security {
     component "authorization service" {
@@ -80,11 +148,18 @@ package security {
 
 interface iauth
 iauth_port -up- iauth
-iauth_port_gw -down-( iauth
+iauth_port_im -down-( iauth
+iauth_port_pm -down-( iauth
+iauth_port_adm -down-( iauth
+iauth_port_mm -down-( iauth
+
 
 interface iauthorization
 iauthorization_port -up- iauthorization
-iauthorization_port_gw -down-( iauthorization
+iauthorization_port_im -down-( iauthorization
+iauthorization_port_pm -down-( iauthorization
+iauthorization_port_adm -down-( iauthorization
+iauthorization_port_mm -down-( iauthorization
 
 package "business logic" {
     component "customer tenant management" {
@@ -137,16 +212,7 @@ package "business logic" {
         portout icache_ip
         portout inotification_ip
     }
-    component analitycs {
-        portin analytics_port
-        portout ilogging_an
-        portout imonitoring_an
-        portout ireporting_an
-        portout ifile_storage_an
-        portout iconfiguration_an
-        portout icache_an
-        portout inotification_an
-    }
+
     component "generative ia orchestrator" {
         portin generative_ia_orchestrator_port
         portout ilogging_gio
@@ -171,36 +237,79 @@ package "business logic" {
 
 interface icustomer_tenant_management
 customer_tenant_management_port -up- icustomer_tenant_management
-icustomer_tenant_management_port_gw -down-( icustomer_tenant_management
 
 interface iuser_management
 user_management_port -up- iuser_management
-user_management_port_gw -down-( iuser_management
 
 interface isuscription_plan_management
 suscription_plan_management_port -up- isuscription_plan_management
-suscription_plan_management_port_gw -down-( isuscription_plan_management
 
 interface ibilling_management
 billing_management_port -up- ibilling_management
-billing_management_port_gw -down-( ibilling_management
 
 interface iincident_process
 incident_process_port -up- iincident_process
-incident_process_port_gw -down-( iincident_process
-
-interface ianalytics
-analytics_port -up- ianalytics
-analytics_port_gw -down-( ianalytics
 
 interface igenerative_ia_orchestrator
 generative_ia_orchestrator_port -up- igenerative_ia_orchestrator
-generative_ia_orchestrator_port_gw -down-( igenerative_ia_orchestrator
 
 interface ianalytics_engine
 analytics_engine_port -up- ianalytics_engine
-analytics_engine_port_gw -down-( ianalytics_engine
+/' 
+#########################################################################
 
+ 
+#########################################################################
+'/
+
+skinparam class {
+  ArrowColor #FF5733
+}
+icustomer_tenant_management_port_im -down-( icustomer_tenant_management
+user_management_port_im -down-( iuser_management
+suscription_plan_management_port_im -down-( isuscription_plan_management
+billing_management_port_im -down-( ibilling_management
+incident_process_port_im -down-( iincident_process
+generative_ia_orchestrator_port_im -down-( igenerative_ia_orchestrator
+analytics_engine_port_im -down-( ianalytics_engine
+
+skinparam class {
+  ArrowColor #58FF33
+}
+icustomer_tenant_management_port_pm -down-( icustomer_tenant_management
+user_management_port_pm -down-( iuser_management
+suscription_plan_management_port_pm -down-( isuscription_plan_management
+billing_management_port_pm -down-( ibilling_management
+incident_process_port_pm -down-( iincident_process
+generative_ia_orchestrator_port_pm -down-( igenerative_ia_orchestrator
+analytics_engine_port_pm -down-( ianalytics_engine
+
+skinparam class {
+  ArrowColor #3347FF
+}
+icustomer_tenant_management_port_adm -down-( icustomer_tenant_management
+user_management_port_adm -down-( iuser_management
+suscription_plan_management_port_adm -down-( isuscription_plan_management
+billing_management_port_adm -down-( ibilling_management
+incident_process_port_adm -down-( iincident_process
+generative_ia_orchestrator_port_adm -down-( igenerative_ia_orchestrator
+analytics_engine_port_adm -down-( ianalytics_engine
+
+skinparam class {
+  ArrowColor #FFB133
+}
+icustomer_tenant_management_port_mm -down-( icustomer_tenant_management
+user_management_port_mm -down-( iuser_management
+suscription_plan_management_port_mm -down-( isuscription_plan_management
+billing_management_port_mm -down-( ibilling_management
+incident_process_port_mm -down-( iincident_process
+generative_ia_orchestrator_port_mm -down-( igenerative_ia_orchestrator
+analytics_engine_port_mm -down-( ianalytics_engine
+
+
+skinparam class {
+  ArrowColor #000000
+}
 note bottom of "customer tenant management"
     "customer tenant management" es un componente que 
     se encarga de gestionar los 
@@ -277,7 +386,10 @@ package common {
 
 interface icatalog_service
 catalog_service_port -up- icatalog_service
-catalog_service_port_gw -down-( icatalog_service
+catalog_service_port_im -down-( icatalog_service
+catalog_service_port_pm -down-( icatalog_service
+catalog_service_port_adm -down-( icatalog_service
+catalog_service_port_mm -down-( icatalog_service
 
 interface ilogging
 logging_service_port -up- ilogging
@@ -309,7 +421,6 @@ ilogging_um .down.> ilogging
 ilogging_spm .down.> ilogging
 ilogging_bm .down.> ilogging
 ilogging_ip .down.> ilogging
-ilogging_an .down.> ilogging
 ilogging_gio .down.> ilogging
 ilogging_ae .down.> ilogging
 
@@ -321,7 +432,6 @@ imonitoring_um .down.> imonitoring
 imonitoring_spm .down.> imonitoring
 imonitoring_bm .down.> imonitoring
 imonitoring_ip .down.> imonitoring
-imonitoring_an .down.> imonitoring
 imonitoring_gio .down.> imonitoring
 imonitoring_ae .down.> imonitoring
 
@@ -333,7 +443,6 @@ ireporting_um .down.> ireporting
 ireporting_spm .down.> ireporting
 ireporting_bm .down.> ireporting
 ireporting_ip .down.> ireporting
-ireporting_an .down.> ireporting
 ireporting_gio .down.> ireporting
 ireporting_ae .down.> ireporting
 
@@ -345,7 +454,6 @@ ifile_storage_um -down-( ifile_storage
 ifile_storage_spm -down-( ifile_storage
 ifile_storage_bm -down-( ifile_storage
 ifile_storage_ip -down-( ifile_storage
-ifile_storage_an -down-( ifile_storage
 ifile_storage_gio -down-( ifile_storage
 ifile_storage_ae -down-( ifile_storage
 
@@ -357,7 +465,6 @@ iconfiguration_um -down-( iconfiguration
 iconfiguration_spm -down-( iconfiguration
 iconfiguration_bm -down-( iconfiguration
 iconfiguration_ip -down-( iconfiguration
-iconfiguration_an -down-( iconfiguration
 iconfiguration_gio -down-( iconfiguration
 iconfiguration_ae -down-( iconfiguration
 
@@ -369,7 +476,6 @@ icache_um -down-( icache
 icache_spm -down-( icache
 icache_bm -down-( icache
 icache_ip -down-( icache
-icache_an -down-( icache
 icache_gio -down-( icache
 icache_ae -down-( icache
 
@@ -381,7 +487,6 @@ inotification_um .down.> inotification
 inotification_spm .down.> inotification 
 inotification_bm .down.> inotification 
 inotification_ip .down.> inotification 
-inotification_an .down.> inotification 
 inotification_gio .down.> inotification 
 inotification_ae .down.> inotification 
 
