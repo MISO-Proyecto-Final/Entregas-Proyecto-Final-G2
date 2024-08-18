@@ -87,22 +87,35 @@ package data {
 package common {
     component "notification service"{
         portin notification_service_port
-        portout email_service_port
-        portout sms_service_port
-        portout push_notification_service_port
+        portout email_service_port_out
+        portout sms_service_port_out
+        portout push_notification_service_port_out
     }
-
-    
 
     component "email service"{
         portin email_service_port
     }
+
+    interface inotification_email
+    email_service_port -up- inotification_email
+    email_service_port_out -down-( inotification_email
+
     component "sms service"{
         portin sms_service_port
     }
+
+    interface inotification_sms
+    sms_service_port -up- inotification_sms
+    sms_service_port_out -down-( inotification_sms
+
     component "push notification service"{
         portin push_notification_service_port
     }
+
+    interface inotification_push_notification
+    push_notification_service_port -up- inotification_push_notification
+    push_notification_service_port_out -down-( inotification_push_notification
+
     component "logging service"
     component "monitoring service"
     component "reporting service"
