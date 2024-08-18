@@ -35,6 +35,40 @@ package "presentation" {
 ' -----------------------------------------------------------------------
 ' - NOTAS
 ' -----------------------------------------------------------------------
+    note top of "customer portal"
+        Es la interfaz principal utilizada por los clientes 
+        para interactuar con los servicios que ofrece el sistema. 
+        Permite a los usuarios gestionar sus cuentas, suscripciones, 
+        acceder a productos, realizar consultas y recibir notificaciones. 
+        Además, es el portal a través del cual los clientes pueden 
+        visualizar y descargar reportes generados por el sistema, 
+        proporcionando acceso a análisis y datos relevantes relacionados 
+        con su uso de los servicios.
+    end note
+    note top of "client admin dashboard"
+        Este componente es un panel de administración utilizado por los 
+        administradores de los clientes para gestionar las configuraciones 
+        específicas del cliente, monitorizar el uso de los servicios, 
+        manejar usuarios internos y configurar políticas y permisos. 
+        Es crucial para la administración interna de las cuentas de clientes, 
+        permitiendo supervisar la actividad y ajustar configuraciones según 
+        las necesidades del cliente.
+    end note
+    note top of "mobile app"
+        La aplicación móvil permite a los usuarios de una empresa cliente de 
+        ABCall interactuar de manera eficiente con los servicios desde 
+        dispositivos móviles. Las funcionalidades principales incluyen la 
+        interacción con un chatbot, consulta del estado de solicitudes, respuesta 
+        a encuestas, creación de incidentes (PQR), y la actualización de datos 
+        personales y preferencias de comunicación. Los usuarios también pueden 
+        visualizar indicadores y tableros de control, acceder a reportes de 
+        llamadas y recibir notificaciones sobre incidentes. Además, ofrece acceso 
+        a servicios de inteligencia artificial generativa, permitiendo que los 
+        usuarios reciban respuestas automatizadas y personalizadas según sus 
+        interacciones. Esta app está diseñada para ser ligera, responsiva y fácil 
+        de usar, asegurando que los usuarios móviles tengan una experiencia fluida 
+        y funcional en cualquier momento y lugar​ .
+    end note
     note top of "integration service"
         "Corresponde en general a los servicios implemetados 
         por los clientes para integrarse con ABCall"
@@ -86,10 +120,33 @@ integration_service_port -down-( igw_integration
 ' -----------------------------------------------------------------------
 
 note right of "api gateway" 
-    "API Gateway acts as a reverse proxy, routing requests to the appropriate services. 
-    It also provides cross-cutting concerns such as authentication, 
-    authorization, rate limiting, and logging."
+   El API Gateway actúa como un punto de entrada central para todas 
+   las solicitudes de los clientes y sistemas externos. Funciona 
+   como un proxy inverso, dirigiendo las solicitudes a los servicios
+   apropiados según el tipo de solicitud. Además, gestiona funciones 
+   transversales como la autenticación, autorización, limitación de 
+   tasas, registro de logs y balanceo de carga. 
+   Es crucial para la seguridad y el rendimiento del sistema, asegurando 
+   que solo las solicitudes válidas y seguras lleguen a los servicios internos.
 end note
+skinparam note {
+    BackgroundColor YellowGreen
+    BorderColor DarkGreen
+    FontColor Black
+}
+
+note right of "api gateway"
+    El uso del patrón de API Gateway es crucial en arquitecturas Cloud Native, 
+    ya que centraliza el manejo de solicitudes, simplifica la integración 
+    de servicios, y mejora la seguridad al actuar como un único punto de 
+    entrada para todos los microservicios. Esto permite aplicar políticas 
+    de seguridad, autenticación, autorización y control de tráfico de manera 
+    unificada, garantizando un acceso consistente y seguro a los servicios 
+    distribuidos.
+end note
+
+
+
 
 ' #######################################################################
 ' ORCHESTRATION LAYER
@@ -174,6 +231,58 @@ iadmin_port_gw -down-( iadmin
 iportal_port_gw -down-( iportal
 iintegration_port_gw -down-( iintegration
 
+'-----------------------------------------------------------------------
+' - NOTAS
+'-----------------------------------------------------------------------
+
+note left of "integration"
+    El componente Integration orquesta y coordina las interacciones 
+    entre el sistema principal y servicios externos, asegurando 
+    que las solicitudes se procesen de manera eficiente y ordenada. 
+    Es vital para manejar la autenticación, autorización, y gestión 
+    de usuarios entre sistemas distribuidos.
+end note
+
+note top of "portal"
+    El componente Portal media las solicitudes provenientes del 
+    Customer Portal hacia los servicios de negocio, como gestión 
+    de usuarios, suscripciones y facturación. Garantiza que las 
+    operaciones iniciadas en el portal se ejecuten correctamente 
+    en los sistemas backend.
+end note
+
+note left of "admin dashboard"
+    Admin Dashboard orquesta las interacciones iniciadas desde el 
+    panel de administración de clientes, manejando configuraciones, 
+    políticas y la supervisión de actividades, asegurando una 
+    administración coherente y segura.
+end note
+
+note top of "mobile"
+    El componente Mobile media las solicitudes provenientes de la 
+    aplicación móvil hacia los servicios de negocio, permitiendo 
+    la gestión de cuentas, suscripciones, reportes y notificaciones 
+    desde dispositivos móviles de manera eficiente y segura.
+end note
+
+note top of "Orchestration"
+    El **patrón Mediator** es esencial en arquitecturas Cloud Native para centralizar la 
+    comunicación entre servicios distribuidos, reduciendo el acoplamiento y 
+    simplificando la coordinación. Los cuatro mediadores en este diseño:
+    
+    - **Integration Mediator**: Coordina la interacción entre el sistema principal y 
+      servicios externos, manejando autenticación, autorización y la gestión de usuarios.
+    
+    - **Portal Mediator**: Media las solicitudes del Customer Portal hacia los servicios 
+      de negocio, asegurando operaciones eficientes y seguras.
+    
+    - **Admin Dashboard Mediator**: Orquesta las interacciones desde el panel de 
+      administración, gestionando configuraciones y políticas de manera coherente.
+    
+    - **Mobile Mediator**: Gestiona las solicitudes desde la aplicación móvil hacia los 
+      servicios de negocio, optimizando la experiencia en dispositivos móviles.
+end note
+
 ' #######################################################################
 ' SECURITY LAYER
 ' #######################################################################
@@ -216,6 +325,44 @@ iauthorization_port_pm -down-( iauthorization
 iauthorization_port_adm -down-( iauthorization
 iauthorization_port_mm -down-( iauthorization
 
+' -----------------------------------------------------------------------
+' - NOTAS
+' -----------------------------------------------------------------------
+note bottom of "authorization service"
+    El servicio de Authorization se encarga de verificar que los usuarios tengan 
+    los permisos adecuados para acceder a recursos específicos. Implementa políticas 
+    de control de acceso basadas en roles (RBAC) y permisos, garantizando que solo 
+    usuarios autorizados puedan realizar ciertas acciones, manteniendo la seguridad 
+    y la integridad del sistema.
+end note
+
+note bottom of "authentication service"
+    El servicio de Authentication gestiona la verificación de identidad de los usuarios 
+    antes de permitirles acceder a los servicios del sistema. Soporta autenticación mediante 
+    contraseñas, autenticación de dos factores (2FA), y tokens, asegurando que solo usuarios 
+    legítimos puedan interactuar con el sistema, protegiendo contra accesos no autorizados.
+end note
+
+note right of "security"
+    **Tácticas de Seguridad Aplicadas en el Proyecto**:
+    
+    - **Identify Actors**: Todos los usuarios y sistemas externos que interactúan con la plataforma 
+      serán identificados antes de acceder a los servicios, asegurando que el sistema pueda reconocer 
+      la fuente de todas las solicitudes.
+    
+    - **Authenticate Actors**: Se implementará autenticación robusta (incluyendo 2FA y contraseñas 
+      seguras) para todas las interfaces del proyecto, como la aplicación móvil, el portal del cliente 
+      y el panel de administración, garantizando que solo los usuarios legítimos accedan al sistema.
+    
+    - **Authorize Actors**: El acceso a funcionalidades y datos específicos estará controlado mediante 
+      políticas de autorización, asegurando que solo usuarios con los permisos adecuados puedan 
+      realizar acciones sensibles, como cambios en configuraciones o acceso a información confidencial.
+    
+    - **Restrict Login**: Se protegerán las interfaces de usuario mediante la restricción de intentos 
+      de inicio de sesión fallidos, bloqueando temporalmente cuentas para prevenir ataques de fuerza 
+      bruta y garantizar la seguridad del acceso.
+end note
+
 ' #######################################################################
 ' BUSINESS LOGIC LAYER
 ' #######################################################################
@@ -230,6 +377,7 @@ package "business logic" {
         portout iconfiguration_ctm
         portout icache_ctm
         portout inotification_ctm
+        portout iaudit_service_ctm
     }
     component "user management" {
         portin user_management_port
@@ -240,6 +388,7 @@ package "business logic" {
         portout iconfiguration_um
         portout icache_um
         portout inotification_um
+        portout iaudit_service_um
     }
     component "suscription plan management" {
         portin suscription_plan_management_port
@@ -250,6 +399,7 @@ package "business logic" {
         portout iconfiguration_spm
         portout icache_spm
         portout inotification_spm
+        portout iaudit_service_spm
     }
     component "billing management" {
         portin billing_management_port
@@ -260,6 +410,7 @@ package "business logic" {
         portout iconfiguration_bm
         portout icache_bm
         portout inotification_bm
+        portout iaudit_service_bm
     }
     component "incident process" {
         portin incident_process_port
@@ -270,6 +421,7 @@ package "business logic" {
         portout iconfiguration_ip
         portout icache_ip
         portout inotification_ip
+        portout iaudit_service_ip
     }
 
     component "generative ia orchestrator" {
@@ -281,6 +433,7 @@ package "business logic" {
         portout iconfiguration_gio
         portout icache_gio
         portout inotification_gio
+        portout iaudit_service_gio
     }
     component "analytics engine" {
         portin analytics_engine_port
@@ -291,6 +444,7 @@ package "business logic" {
         portout iconfiguration_ae
         portout icache_ae
         portout inotification_ae
+        portout iaudit_service_ae
     }
 }
 
@@ -449,6 +603,10 @@ package common {
 ' -----------------------------------------------------------------------
 ' - OTROS SERVICIOS COMUNES
 ' -----------------------------------------------------------------------
+    
+    component audit_service {
+        portin audit_service_port
+    }
     component "logging service" {
         portin logging_service_port
     }
@@ -478,6 +636,9 @@ package common {
 
 interface icatalog_service
 catalog_service_port -up- icatalog_service
+
+interface iaudit_service
+audit_service_port -up- iaudit_service
 
 interface ilogging
 logging_service_port -up- ilogging
@@ -523,6 +684,22 @@ ilogging_bm .down.> ilogging
 ilogging_ip .down.> ilogging
 ilogging_gio .down.> ilogging
 ilogging_ae .down.> ilogging
+
+' .......................................................................
+' AUDIT CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #33FFBE
+}
+
+iaudit_service_ctm .down.> iaudit_service
+iaudit_service_um .down.> iaudit_service
+iaudit_service_spm .down.> iaudit_service
+iaudit_service_bm .down.> iaudit_service
+iaudit_service_ip .down.> iaudit_service
+iaudit_service_gio .down.> iaudit_service
+iaudit_service_ae .down.> iaudit_service
+
 
 ' .......................................................................
 ' MONITORING CONNECTIONS
