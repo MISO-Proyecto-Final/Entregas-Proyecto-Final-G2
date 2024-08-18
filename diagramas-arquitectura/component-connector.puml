@@ -283,6 +283,21 @@ note top of "Orchestration"
       servicios de negocio, optimizando la experiencia en dispositivos móviles.
 end note
 
+note top of "Orchestration"
+    **Tácticas de Seguridad Aplicadas en el Módulo de Orquestación**:
+    
+    - **Limit Access**: En el módulo de Orquestación, esta táctica se aplica al garantizar que solo 
+      los mediadores (Integration, Portal, Admin Dashboard, Mobile) puedan interactuar directamente 
+      con los servicios de negocio y backend. Los mediadores controlan el acceso a los recursos, 
+      permitiendo solo lo necesario según las reglas de negocio definidas, protegiendo así 
+      los servicios críticos del acceso no autorizado.
+    
+    - **Limit Exposure**: Esta táctica se implementa limitando la exposición de los servicios backend 
+      solo a través de los mediadores. Los mediadores filtran las solicitudes, asegurando que 
+      los detalles internos del sistema no sean visibles ni accesibles desde el exterior, 
+      minimizando la superficie de ataque y exponiendo solo la información estrictamente necesaria.
+end note
+
 ' #######################################################################
 ' SECURITY LAYER
 ' #######################################################################
@@ -604,7 +619,7 @@ package common {
 ' - OTROS SERVICIOS COMUNES
 ' -----------------------------------------------------------------------
     
-    component audit_service {
+    component "audit service" {
         portin audit_service_port
     }
     component "logging service" {
@@ -787,6 +802,24 @@ inotification_ip .down.> inotification
 inotification_gio .down.> inotification 
 inotification_ae .down.> inotification 
 
+
+' .......................................................................
+' NOTES
+' .......................................................................
+note bottom of "audit service"
+    **Tácticas de Seguridad Aplicadas en el Proyecto**:
+    
+    - **Nonrepudiation**: El servicio de auditoría garantiza que todas las acciones importantes, 
+      como transacciones y cambios en configuraciones, se registren de manera que no puedan ser 
+      negadas posteriormente. Cada acción registrada incluye identificadores únicos, 
+      marcas de tiempo y detalles relevantes para asegurar que las partes involucradas no puedan 
+      repudiar su participación en la actividad registrada.
+    
+    - **Audit**: El servicio de auditoría mantendrá un registro detallado de las acciones realizadas 
+      en el sistema, incluyendo accesos, modificaciones y transacciones críticas. 
+      Estos registros se utilizarán para rastrear el origen de cualquier incidente de seguridad, 
+      permitiendo la identificación de actores malintencionados y facilitando la recuperación del sistema.
+end note
 ' #######################################################################
 
 @enduml
