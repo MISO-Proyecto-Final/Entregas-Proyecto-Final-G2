@@ -34,6 +34,7 @@ package gateway {
         portout analytics_port_gw
         portout generative_ia_orchestrator_port_gw
         portout analytics_engine_port_gw
+        portout catalog_service_port_gw
     }
 
 }
@@ -48,6 +49,8 @@ gw_mobile_port -up- igwmobile
 gw_portal_port_out -down-( igwportal
 gw_admin_port_out -down-( igwadmin
 gw_mobile_port_out -down-( igwmobile
+
+
 note right of "api gateway" 
     "api gateway" is a component that acts 
     as a reverse proxy, routing requests from 
@@ -74,28 +77,91 @@ iauthorization_port_gw -down-( iauthorization
 package "business logic" {
     component "customer tenant management"{
         portin customer_tenant_management_port
+        portout ilogging_ctm
+        portout imonitoring_ctm
+        portout ireporting_ctm
+        portout ifile_storage_ctm
+        portout iconfiguration_ctm
+        portout icache_ctm
+        portout inotification_ctm
+
 
     }
     component "user management" {
         portin user_management_port
+        portout ilogging_um
+        portout imonitoring_um
+        portout ireporting_um
+        portout ifile_storage_um
+        portout iconfiguration_um
+        portout icache_um
+        portout inotification_um
+
     }
     component "suscription plan management"{
         portin suscription_plan_management_port
+        portout ilogging_spm
+        portout imonitoring_spm
+        portout ireporting_spm
+        portout ifile_storage_spm
+        portout iconfiguration_spm
+        portout icache_spm
+        portout inotification_spm
+
     }
     component "billing management"{
         portin billing_management_port
+        portout ilogging_bm
+        portout imonitoring_bm
+        portout ireporting_bm
+        portout ifile_storage_bm
+        portout iconfiguration_bm
+        portout icache_bm
+        portout inotification_bm
+
     }
     component "incident process"{
         portin incident_process_port
+        portout ilogging_ip
+        portout imonitoring_ip
+        portout ireporting_ip
+        portout ifile_storage_ip
+        portout iconfiguration_ip
+        portout icache_ip
+        portout inotification_ip
     }
     component analitycs{
         portin analytics_port
+        portout ilogging_an
+        portout imonitoring_an
+        portout ireporting_an
+        portout ifile_storage_an
+        portout iconfiguration_an
+        portout icache_an
+        portout inotification_an
+
     }
     component "generative ia orchestrator"{
         portin generative_ia_orchestrator_port
+        portout ilogging_gio
+        portout imonitoring_gio
+        portout ireporting_gio
+        portout ifile_storage_gio
+        portout iconfiguration_gio
+        portout icache_gio
+        portout inotification_gio
+
     }
     component "analytics engine"{
         portin analytics_engine_port
+        portout ilogging_ae
+        portout imonitoring_ae
+        portout ireporting_ae
+        portout ifile_storage_ae
+        portout iconfiguration_ae
+        portout icache_ae
+        portout inotification_ae
+
     }
 }
 
@@ -152,6 +218,11 @@ end note
 
 
 package common {
+
+    component catalog_service{
+        portin catalog_service_port
+    }
+
     component "notification service"{
         portin notification_service_port
         portout email_service_port_out
@@ -205,6 +276,11 @@ package common {
     }
 }
 
+interface icatalog_service
+catalog_service_port -up- icatalog_service
+
+catalog_service_port_gw -down-( icatalog_service
+
 interface ilogging
 logging_service_port -up- ilogging
 
@@ -222,5 +298,77 @@ configuration_service_port -up- iconfiguration
 
 interface icache
 cache_service_port -up- icache
+
+
+interface inotification
+notification_service_port -up- inotification
+
+
+inotification_ctm -down-( inotification
+inotification_um -down-( inotification
+inotification_spm -down-( inotification
+inotification_bm -down-( inotification
+inotification_ip -down-( inotification
+inotification_an -down-( inotification
+inotification_gio -down-( inotification
+inotification_ae -down-( inotification
+
+ilogging_ctm -down-( ilogging
+ilogging_um -down-( ilogging
+ilogging_spm -down-( ilogging
+ilogging_bm -down-( ilogging
+ilogging_ip -down-( ilogging
+ilogging_an -down-( ilogging
+ilogging_gio -down-( ilogging
+ilogging_ae -down-( ilogging
+
+imonitoring_ctm -down-( imonitoring
+imonitoring_um -down-( imonitoring
+imonitoring_spm -down-( imonitoring
+imonitoring_bm -down-( imonitoring
+imonitoring_ip -down-( imonitoring
+imonitoring_an -down-( imonitoring
+imonitoring_gio -down-( imonitoring
+imonitoring_ae -down-( imonitoring
+
+ireporting_ctm -down-( ireporting
+ireporting_um -down-( ireporting
+ireporting_spm -down-( ireporting
+ireporting_bm -down-( ireporting
+ireporting_ip -down-( ireporting
+ireporting_an -down-( ireporting
+ireporting_gio -down-( ireporting
+ireporting_ae -down-( ireporting
+
+ifile_storage_ctm -down-( ifile_storage
+ifile_storage_um -down-( ifile_storage
+ifile_storage_spm -down-( ifile_storage
+ifile_storage_bm -down-( ifile_storage
+ifile_storage_ip -down-( ifile_storage
+ifile_storage_an -down-( ifile_storage
+ifile_storage_gio -down-( ifile_storage
+ifile_storage_ae -down-( ifile_storage
+
+iconfiguration_ctm -down-( iconfiguration
+iconfiguration_um -down-( iconfiguration
+iconfiguration_spm -down-( iconfiguration
+iconfiguration_bm -down-( iconfiguration
+iconfiguration_ip -down-( iconfiguration
+iconfiguration_an -down-( iconfiguration
+iconfiguration_gio -down-( iconfiguration
+iconfiguration_ae -down-( iconfiguration
+
+icache_ctm -down-( icache
+icache_um -down-( icache
+icache_spm -down-( icache
+icache_bm -down-( icache
+icache_ip -down-( icache
+icache_an -down-( icache
+icache_gio -down-( icache
+icache_ae -down-( icache
+
+
+
+
 
 @enduml
