@@ -26,6 +26,7 @@ package gateway {
         portin gw_mobile_port
         portout iauth_port_gw
         portout iauthorization_port_gw
+        portout icustomer_tenant_management_port_gw
     }
 
 }
@@ -74,6 +75,21 @@ package "business logic" {
     component analitycs
     component "generative ia orchestrator"
 }
+
+
+interface icustomer_tenant_management
+customer_tenant_management_port -up- icustomer_tenant_management
+icustomer_tenant_management_port_gw -down-( icustomer_tenant_management
+
+note left of "customer tenant management"
+    "customer tenant management" es un componente que 
+    se encarga de gestionar los 
+    clientes de ABCall, sus configuraciones 
+    y el estado general de la suscripción al servicio.
+end note
+
+
+
 
 package data {
     component "customer tenant data"
