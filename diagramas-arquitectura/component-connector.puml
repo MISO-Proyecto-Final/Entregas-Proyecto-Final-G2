@@ -368,6 +368,7 @@ package common {
 
     component "monitoring service" {
         portin monitoring_service_port
+        portout notification_service_port_out_monitoring
     }
 
     component "reporting service" {
@@ -482,6 +483,7 @@ icache_ae -down-( icache
 skinparam class {
   ArrowColor #9933FF
 }
+notification_service_port_out_monitoring .up.> inotification
 inotification_ctm .down.> inotification 
 inotification_um .down.> inotification 
 inotification_spm .down.> inotification 
