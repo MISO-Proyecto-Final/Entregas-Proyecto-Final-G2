@@ -101,10 +101,24 @@ package data {
 }
 
 package common {
-    component "notification service"
-    component "email service"
-    component "sms service"
-    component "push notification service"
+    component "notification service"{
+        portin notification_service_port
+        portout email_service_port
+        portout sms_service_port
+        portout push_notification_service_port
+    }
+
+    
+
+    component "email service"{
+        portin email_service_port
+    }
+    component "sms service"{
+        portin sms_service_port
+    }
+    component "push notification service"{
+        portin push_notification_service_port
+    }
     component "logging service"
     component "monitoring service"
     component "reporting service"
