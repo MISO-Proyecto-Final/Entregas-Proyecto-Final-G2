@@ -27,6 +27,13 @@ package gateway {
         portout iauth_port_gw
         portout iauthorization_port_gw
         portout icustomer_tenant_management_port_gw
+        portout suscription_plan_management_port_gw
+        portout user_management_port_gw
+        portout billing_management_port_gw
+        portout incident_process_port_gw
+        portout analytics_port_gw
+        portout generative_ia_orchestrator_port_gw
+        portout analytics_engine_port_gw
     }
 
 }
@@ -69,11 +76,27 @@ package "business logic" {
         portin customer_tenant_management_port
 
     }
-    component "suscription plan management"
-    component "billing management"
-    component "incident process"
-    component analitycs
-    component "generative ia orchestrator"
+    component "user management" {
+        portin user_management_port
+    }
+    component "suscription plan management"{
+        portin suscription_plan_management_port
+    }
+    component "billing management"{
+        portin billing_management_port
+    }
+    component "incident process"{
+        portin incident_process_port
+    }
+    component analitycs{
+        portin analytics_port
+    }
+    component "generative ia orchestrator"{
+        portin generative_ia_orchestrator_port
+    }
+    component "analytics engine"{
+        portin analytics_engine_port
+    }
 }
 
 
@@ -81,24 +104,52 @@ interface icustomer_tenant_management
 customer_tenant_management_port -up- icustomer_tenant_management
 icustomer_tenant_management_port_gw -down-( icustomer_tenant_management
 
-note left of "customer tenant management"
+interface iuser_management
+user_management_port -up- iuser_management
+user_management_port_gw -down-( iuser_management
+
+interface isuscription_plan_management
+suscription_plan_management_port -up- isuscription_plan_management
+suscription_plan_management_port_gw -down-( isuscription_plan_management
+
+interface ibilling_management
+billing_management_port -up- ibilling_management
+billing_management_port_gw -down-( ibilling_management
+
+interface iincident_process
+incident_process_port -up- iincident_process
+incident_process_port_gw -down-( iincident_process
+
+interface ianalytics
+analytics_port -up- ianalytics
+analytics_port_gw -down-( ianalytics
+
+interface igenerative_ia_orchestrator
+generative_ia_orchestrator_port -up- igenerative_ia_orchestrator
+generative_ia_orchestrator_port_gw -down-( igenerative_ia_orchestrator
+
+interface ianalytics_engine
+analytics_engine_port -up- ianalytics_engine
+analytics_engine_port_gw -down-( ianalytics_engine
+
+
+
+note bottom of "customer tenant management"
     "customer tenant management" es un componente que 
     se encarga de gestionar los 
     clientes de ABCall, sus configuraciones 
     y el estado general de la suscripción al servicio.
 end note
 
+note bottom of "suscription plan management"
+    "suscription plan management" Gestiona la informacion y 
+    configuracion de las susbcripciones y planes.
+    Incluye la configuracion de precios,
+    limites de uso y restricciones.
+    Registro de historico de cambios de planes para clientes.
+    Selección de planes y configuracion de planes por cliente.
+end note
 
-
-
-package data {
-    component "customer tenant data"
-    component "user data"
-    component "plan data"
-    component "billing data"
-    component "incident data"
-    component "analitycs data"
-}
 
 package common {
     component "notification service"{
