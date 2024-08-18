@@ -1,158 +1,27 @@
-@startuml domain-model
-skinparam class {
-    BackgroundColor LightBlue
-    BorderColor DarkBlue
-    FontColor Black
-}
-skinparam packageStyle rectangle
+@startuml
+hide methods
 
-package "Presentation Layer" {
-    class CustomerPortal {
-        +void handleRequest(Request request)
-    }
-    class ClientAdminDashboard {
-        +void handleRequest(Request request)
-    }
-    class MobileApp {
-        +void handleRequest(Request request)
-    }
+package "Gestión de Clientes" {
+  Cliente "1" -- "*" Suscripcion
 }
 
-package "Gateway Layer" {
-    class ApiGateway {
-    }
+package "Gestión de Suscripciones" {
+  Plan "1" -- "*" Suscripcion
 }
 
-package "Orchestration Layer" {
-    class Integration {
-        +void integrateWithExternalService(ExternalService service)
-    }
-    class Portal {
-        +void manageTenant(CustomerTenant tenant)
-        +void manageSubscription(SubscriptionPlan plan)
-        +void manageUser(User user)
-    }
-    class AdminDashboard {
-        +void manageTenant(CustomerTenant tenant)
-        +void manageSubscription(SubscriptionPlan plan)
-        +void manageUser(User user)
-    }
-    class Mobile {
-        +void manageTenant(CustomerTenant tenant)
-        +void manageSubscription(SubscriptionPlan plan)
-        +void manageUser(User user)
-    }
+package "Gestión de Incidentes" {
+  Incidente "1" -- "0..1" Llamada
+  Incidente "1" -- "*" Mensaje
 }
 
-package "Security Layer" {
-    class AuthorizationService {
-        +void authorizeUser(User user)
-    }
-    class AuthenticationService {
-        +void authenticateUser(User user)
-    }
+package "Gestión de Usuarios" {
+  Usuario "*" -- "*" Cliente
+  Usuario "1" -- "*" Incidente
 }
 
-package "Business Logic Layer" {
-    class CustomerTenantManagement {
-        +void manageCustomerTenant(CustomerTenant tenant)
-        +void configureTenantSettings(TenantSettings settings)
-        +void manageSubscription(SubscriptionPlan plan)
-    }
-    class UserManagement {
-        +void manageUser(User user)
-        +void configureUserSettings(UserSettings settings)
-    }
-    class SubscriptionPlanManagement {
-        +void manageSubscription(SubscriptionPlan plan)
-        +void configurePlanSettings(PlanSettings settings)
-    }
-    class BillingManagement {
-        +void manageBilling(BillingInfo billingInfo)
-    }
-    class IncidentProcess {
-        +void handleIncident(Incident incident)
-        +void escalateIncident(Incident incident)
-    }
-    class GenerativeIAOrchestrator {
-        +void generateResponse(Request request)
-        +void improveResolution(Incident incident)
-    }
-    class AnalyticsEngine {
-        +void performPredictiveAnalysis(Data data)
-        +void generateReports(Report report)
-    }
+
+package "Facturación" {
+  Cliente "1" -- "*" Factura
+  Factura "1" -- "*" DetalleFactura
 }
-
-package "Common Services Layer" {
-    class NotificationService {
-        +void sendEmail(Email email)
-        +void sendSMS(SMS sms)
-        +void sendPushNotification(PushNotification notification)
-    }
-    class LoggingService {
-        +void logEvent(Event event)
-    }
-    class MonitoringService {
-        +void monitorService(Service service)
-        +void alert(Alert alert)
-    }
-    class ReportingService {
-        +void generateReport(Report report)
-    }
-    class FileStorageService {
-        +void storeFile(File file)
-    }
-    class ConfigurationService {
-        +void configureService(Service service)
-    }
-    class CacheService {
-        +void cacheData(Data data)
-    }
-}
-
-CustomerPortal --> ApiGateway : sendsRequest()
-ClientAdminDashboard --> ApiGateway : sendsRequest()
-MobileApp --> ApiGateway : sendsRequest()
-
-ApiGateway --> Integration : routesRequest()
-ApiGateway --> Portal : routesRequest()
-ApiGateway --> AdminDashboard : routesRequest()
-ApiGateway --> Mobile : routesRequest()
-
-Integration --> ExternalService : integrateWith()
-Portal --> CustomerTenantManagement : manageTenant()
-Portal --> UserManagement : manageUser()
-Portal --> SubscriptionPlanManagement : manageSubscription()
-AdminDashboard --> CustomerTenantManagement : manageTenant()
-AdminDashboard --> UserManagement : manageUser()
-AdminDashboard --> SubscriptionPlanManagement : manageSubscription()
-Mobile --> CustomerTenantManagement : manageTenant()
-Mobile --> UserManagement : manageUser()
-Mobile --> SubscriptionPlanManagement : manageSubscription()
-
-AuthenticationService --> AuthorizationService : authenticateUser()
-AuthorizationService --> CustomerTenantManagement : authorizeTenant()
-AuthorizationService --> UserManagement : authorizeUser()
-
-CustomerTenantManagement --> LoggingService : logTenantAction()
-UserManagement --> LoggingService : logUserAction()
-SubscriptionPlanManagement --> LoggingService : logPlanAction()
-BillingManagement --> LoggingService : logBillingAction()
-IncidentProcess --> LoggingService : logIncidentAction()
-GenerativeIAOrchestrator --> LoggingService : logOrchestrationAction()
-AnalyticsEngine --> LoggingService : logAnalyticsAction()
-
-NotificationService --> LoggingService : logNotification()
-MonitoringService --> LoggingService : logMonitoringEvent()
-ReportingService --> LoggingService : logReportGeneration()
-FileStorageService --> LoggingService : logFileStorage()
-ConfigurationService --> LoggingService : logConfiguration()
-CacheService --> LoggingService : logCacheOperation()
-
-NotificationService --> EmailService : sendEmail()
-NotificationService --> SMSService : sendSMS()
-NotificationService --> PushNotificationService : sendPushNotification()
-MonitoringService --> NotificationService : sendAlert()
-
 @enduml
