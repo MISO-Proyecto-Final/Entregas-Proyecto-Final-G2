@@ -1,26 +1,35 @@
-@startuml
+@startuml component-connector
+skinparam packageStyle rectangle
+skinparam component {
+    BackgroundColor<<ExternalComponent>> LightBlue
+    BorderColor<<ExternalComponent>> DarkBlue
+    FontColor<<ExternalComponent>> Black
+}
 package "presentation" {
-    component "customer portal"{
+    component "customer portal" {
         portout gw_portal_port_out
     }
-    component "client admin dashboard"{
+    component "client admin dashboard" {
         portout gw_admin_port_out
     }
-    component "mobile app"{
+    component "mobile app" {
         portout gw_mobile_port_out
     }
 }
 
 
+    component "integration service" <<ExternalComponent>>{
+        portout integration_service_port
+    }
 
-
-
-package "integration" {
-    component "integration service"
-}
+    note top of "integration service"
+        "Corresponde en general a los servicios implemetados 
+        por los clientes para integrarse con ABCall"
+    end note
 
 package gateway {
     component "api gateway" {
+        portin gw_integration_port
         portin gw_portal_port
         portin gw_admin_port
         portin gw_mobile_port
@@ -36,11 +45,12 @@ package gateway {
         portout analytics_engine_port_gw
         portout catalog_service_port_gw
     }
-
 }
+
 interface igwportal
 interface igwadmin
 interface igwmobile
+interface igw_integration
 
 gw_portal_port -up- igwportal
 gw_admin_port -up- igwadmin
@@ -50,23 +60,24 @@ gw_portal_port_out -down-( igwportal
 gw_admin_port_out -down-( igwadmin
 gw_mobile_port_out -down-( igwmobile
 
+gw_integration_port -up- igw_integration
+integration_service_port -down-( igw_integration
 
 note right of "api gateway" 
-    "api gateway" is a component that acts 
-    as a reverse proxy, routing requests from 
-    clients to the appropriate services. 
+    "API Gateway acts as a reverse proxy, routing requests to the appropriate services. 
     It also provides cross-cutting concerns such as authentication, 
-    authorization, rate limiting, and logging.
+    authorization, rate limiting, and logging."
 end note
 
 package security {
-    component "authorization service"{
+    component "authorization service" {
         port iauthorization_port
     }
-    component "authentication service"{
+    component "authentication service" {
         port iauth_port
     }
 }
+
 interface iauth
 iauth_port -up- iauth
 iauth_port_gw -down-( iauth
@@ -74,8 +85,9 @@ iauth_port_gw -down-( iauth
 interface iauthorization
 iauthorization_port -up- iauthorization
 iauthorization_port_gw -down-( iauthorization
+
 package "business logic" {
-    component "customer tenant management"{
+    component "customer tenant management" {
         portin customer_tenant_management_port
         portout ilogging_ctm
         portout imonitoring_ctm
@@ -84,8 +96,6 @@ package "business logic" {
         portout iconfiguration_ctm
         portout icache_ctm
         portout inotification_ctm
-
-
     }
     component "user management" {
         portin user_management_port
@@ -96,9 +106,8 @@ package "business logic" {
         portout iconfiguration_um
         portout icache_um
         portout inotification_um
-
     }
-    component "suscription plan management"{
+    component "suscription plan management" {
         portin suscription_plan_management_port
         portout ilogging_spm
         portout imonitoring_spm
@@ -107,9 +116,8 @@ package "business logic" {
         portout iconfiguration_spm
         portout icache_spm
         portout inotification_spm
-
     }
-    component "billing management"{
+    component "billing management" {
         portin billing_management_port
         portout ilogging_bm
         portout imonitoring_bm
@@ -118,9 +126,8 @@ package "business logic" {
         portout iconfiguration_bm
         portout icache_bm
         portout inotification_bm
-
     }
-    component "incident process"{
+    component "incident process" {
         portin incident_process_port
         portout ilogging_ip
         portout imonitoring_ip
@@ -130,7 +137,7 @@ package "business logic" {
         portout icache_ip
         portout inotification_ip
     }
-    component analitycs{
+    component analitycs {
         portin analytics_port
         portout ilogging_an
         portout imonitoring_an
@@ -139,9 +146,8 @@ package "business logic" {
         portout iconfiguration_an
         portout icache_an
         portout inotification_an
-
     }
-    component "generative ia orchestrator"{
+    component "generative ia orchestrator" {
         portin generative_ia_orchestrator_port
         portout ilogging_gio
         portout imonitoring_gio
@@ -150,9 +156,8 @@ package "business logic" {
         portout iconfiguration_gio
         portout icache_gio
         portout inotification_gio
-
     }
-    component "analytics engine"{
+    component "analytics engine" {
         portin analytics_engine_port
         portout ilogging_ae
         portout imonitoring_ae
@@ -161,10 +166,8 @@ package "business logic" {
         portout iconfiguration_ae
         portout icache_ae
         portout inotification_ae
-
     }
 }
-
 
 interface icustomer_tenant_management
 customer_tenant_management_port -up- icustomer_tenant_management
@@ -198,8 +201,6 @@ interface ianalytics_engine
 analytics_engine_port -up- ianalytics_engine
 analytics_engine_port_gw -down-( ianalytics_engine
 
-
-
 note bottom of "customer tenant management"
     "customer tenant management" es un componente que 
     se encarga de gestionar los 
@@ -216,21 +217,19 @@ note bottom of "suscription plan management"
     Selección de planes y configuracion de planes por cliente.
 end note
 
-
 package common {
-
-    component catalog_service{
+    component catalog_service {
         portin catalog_service_port
     }
 
-    component "notification service"{
+    component "notification service" {
         portin notification_service_port
         portout email_service_port_out
         portout sms_service_port_out
         portout push_notification_service_port_out
     }
 
-    component "email service"{
+    component "email service" {
         portin email_service_port
     }
 
@@ -238,7 +237,7 @@ package common {
     email_service_port -up- inotification_email
     email_service_port_out -down-( inotification_email
 
-    component "sms service"{
+    component "sms service" {
         portin sms_service_port
     }
 
@@ -246,7 +245,7 @@ package common {
     sms_service_port -up- inotification_sms
     sms_service_port_out -down-( inotification_sms
 
-    component "push notification service"{
+    component "push notification service" {
         portin push_notification_service_port
     }
 
@@ -258,27 +257,26 @@ package common {
         portin logging_service_port
     }
 
-    component "monitoring service"{
+    component "monitoring service" {
         portin monitoring_service_port
     }
 
-    component "reporting service"{
+    component "reporting service" {
         portin reporting_service_port
     }
-    component "file storage service"{
+    component "file storage service" {
         portin file_storage_service_port
     }
-    component "configuration service"{
+    component "configuration service" {
         portin configuration_service_port
     }
-    component "cache service"{
+    component "cache service" {
         portin cache_service_port
     }
 }
 
 interface icatalog_service
 catalog_service_port -up- icatalog_service
-
 catalog_service_port_gw -down-( icatalog_service
 
 interface ilogging
@@ -299,47 +297,49 @@ configuration_service_port -up- iconfiguration
 interface icache
 cache_service_port -up- icache
 
-
 interface inotification
 notification_service_port -up- inotification
 
+' Custom colors for each connection
+skinparam class {
+  ArrowColor #FF5733
+}
+ilogging_ctm .down.> ilogging
+ilogging_um .down.> ilogging
+ilogging_spm .down.> ilogging
+ilogging_bm .down.> ilogging
+ilogging_ip .down.> ilogging
+ilogging_an .down.> ilogging
+ilogging_gio .down.> ilogging
+ilogging_ae .down.> ilogging
 
-inotification_ctm -down-( inotification
-inotification_um -down-( inotification
-inotification_spm -down-( inotification
-inotification_bm -down-( inotification
-inotification_ip -down-( inotification
-inotification_an -down-( inotification
-inotification_gio -down-( inotification
-inotification_ae -down-( inotification
+skinparam class {
+  ArrowColor #33FF57
+}
+imonitoring_ctm .down.> imonitoring
+imonitoring_um .down.> imonitoring
+imonitoring_spm .down.> imonitoring
+imonitoring_bm .down.> imonitoring
+imonitoring_ip .down.> imonitoring
+imonitoring_an .down.> imonitoring
+imonitoring_gio .down.> imonitoring
+imonitoring_ae .down.> imonitoring
 
-ilogging_ctm -down-( ilogging
-ilogging_um -down-( ilogging
-ilogging_spm -down-( ilogging
-ilogging_bm -down-( ilogging
-ilogging_ip -down-( ilogging
-ilogging_an -down-( ilogging
-ilogging_gio -down-( ilogging
-ilogging_ae -down-( ilogging
+skinparam class {
+  ArrowColor #3357FF
+}
+ireporting_ctm .down.> ireporting
+ireporting_um .down.> ireporting
+ireporting_spm .down.> ireporting
+ireporting_bm .down.> ireporting
+ireporting_ip .down.> ireporting
+ireporting_an .down.> ireporting
+ireporting_gio .down.> ireporting
+ireporting_ae .down.> ireporting
 
-imonitoring_ctm -down-( imonitoring
-imonitoring_um -down-( imonitoring
-imonitoring_spm -down-( imonitoring
-imonitoring_bm -down-( imonitoring
-imonitoring_ip -down-( imonitoring
-imonitoring_an -down-( imonitoring
-imonitoring_gio -down-( imonitoring
-imonitoring_ae -down-( imonitoring
-
-ireporting_ctm -down-( ireporting
-ireporting_um -down-( ireporting
-ireporting_spm -down-( ireporting
-ireporting_bm -down-( ireporting
-ireporting_ip -down-( ireporting
-ireporting_an -down-( ireporting
-ireporting_gio -down-( ireporting
-ireporting_ae -down-( ireporting
-
+skinparam class {
+  ArrowColor #FF33A1
+}
 ifile_storage_ctm -down-( ifile_storage
 ifile_storage_um -down-( ifile_storage
 ifile_storage_spm -down-( ifile_storage
@@ -349,6 +349,9 @@ ifile_storage_an -down-( ifile_storage
 ifile_storage_gio -down-( ifile_storage
 ifile_storage_ae -down-( ifile_storage
 
+skinparam class {
+  ArrowColor #33FFF7
+}
 iconfiguration_ctm -down-( iconfiguration
 iconfiguration_um -down-( iconfiguration
 iconfiguration_spm -down-( iconfiguration
@@ -358,6 +361,9 @@ iconfiguration_an -down-( iconfiguration
 iconfiguration_gio -down-( iconfiguration
 iconfiguration_ae -down-( iconfiguration
 
+skinparam class {
+  ArrowColor #FFDD33
+}
 icache_ctm -down-( icache
 icache_um -down-( icache
 icache_spm -down-( icache
@@ -367,8 +373,16 @@ icache_an -down-( icache
 icache_gio -down-( icache
 icache_ae -down-( icache
 
-
-
-
+skinparam class {
+  ArrowColor #9933FF
+}
+inotification_ctm .down.> inotification 
+inotification_um .down.> inotification 
+inotification_spm .down.> inotification 
+inotification_bm .down.> inotification 
+inotification_ip .down.> inotification 
+inotification_an .down.> inotification 
+inotification_gio .down.> inotification 
+inotification_ae .down.> inotification 
 
 @enduml
