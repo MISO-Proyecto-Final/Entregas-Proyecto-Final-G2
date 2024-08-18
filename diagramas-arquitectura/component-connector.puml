@@ -1,25 +1,73 @@
 @startuml
 package "presentation" {
-    component "customer portal"
-    component "client admin dashboard"
-    component "mobile app"
+    component "customer portal"{
+        portout gw_portal_port_out
+    }
+    component "client admin dashboard"{
+        portout gw_admin_port_out
+    }
+    component "mobile app"{
+        portout gw_mobile_port_out
+    }
 }
+
+
+
+
 
 package "integration" {
     component "integration service"
 }
 
 package gateway {
-    component "api gateway"
+    component "api gateway" {
+        portin gw_portal_port
+        portin gw_admin_port
+        portin gw_mobile_port
+        portout iauth_port_gw
+        portout iauthorization_port_gw
+    }
+
 }
+interface igwportal
+interface igwadmin
+interface igwmobile
+
+gw_portal_port -up- igwportal
+gw_admin_port -up- igwadmin
+gw_mobile_port -up- igwmobile
+
+gw_portal_port_out -down-( igwportal
+gw_admin_port_out -down-( igwadmin
+gw_mobile_port_out -down-( igwmobile
+note right of "api gateway" 
+    "api gateway" is a component that acts 
+    as a reverse proxy, routing requests from 
+    clients to the appropriate services. 
+    It also provides cross-cutting concerns such as authentication, 
+    authorization, rate limiting, and logging.
+end note
 
 package security {
-    component "authorization service"
-    component "autentication service"
+    component "authorization service"{
+        port iauthorization_port
+    }
+    component "authentication service"{
+        port iauth_port
+    }
 }
+interface iauth
+iauth_port -up- iauth
+iauth_port_gw -down-( iauth
 
+interface iauthorization
+iauthorization_port -up- iauthorization
+iauthorization_port_gw -down-( iauthorization
 package "business logic" {
-    component "client registration"
+    component "customer tenant management"{
+        portin customer_tenant_management_port
+
+    }
     component "suscription plan management"
     component "billing management"
     component "incident process"
@@ -28,8 +76,8 @@ package "business logic" {
 }
 
 package data {
-    component "client data"
-    component "customer data"
+    component "customer tenant data"
+    component "user data"
     component "plan data"
     component "billing data"
     component "incident data"
