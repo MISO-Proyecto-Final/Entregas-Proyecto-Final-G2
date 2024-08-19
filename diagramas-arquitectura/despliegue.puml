@@ -48,6 +48,33 @@ node "GCP Project" {
         
     }
 
+    note top of [Cloud Run]
+        **Tacticas de Disponibilidad aplicadas para componentes de Cloud Run**
+        **Ping/Echo: ** El API Gateway actua como un supervisor y se encarga de enviar
+        ping a los servicios desplegados en cloud run. Este gateway, que ya está configurado
+        para manejar el tráfico de entrada, puede emitir solicitudes HTTP (GET o HEAD) a los
+        endpoints de salud de cada servicio de Cloud Run. Es importante mencionar que cada componente
+        de Cloud Run tendra un endpoint de salud que responda a las solicitudes de ping.
+        **Sanity Checking: **
+        - Los servicios desplegados en cloud run validaran las entradas externas (requests),
+        asegurándo que todos los datos recibidos sean correctos y estén dentro de los rangos esperados antes de
+        procesarlos (validaciones de forma de datos de entrada).
+        - Cada componente validara los estados internos de cada servicio para evitar propagación
+        de errores provenientes a inconsistencias internas.
+        - Cada componente validara que las peticiones se reciban de manera correcta y caso contraro manejara
+        las fallas rechazando solicitudes incorrectas, registrando eventos, y activar mecanismos de recuperación.
+        **Scalating Restart: **
+        - Los servicios desplegados en cloud run se configuraran que intenten reiniciarse automáticamente
+        al detectar una falla.
+        - Principalmente el primer reinicio corresponde a un reinicio simple, si esto no resuelve el problema
+        se procedera a un reinicio a nivel de contenedor, en caso contrario se procedera con un reinicio completo
+        de cloud run.
+        - La configuracion a nivel de reinicio se monitoreara para registrar cada intento de reinicio y si tuvo exito
+        o fracaso.
+        - Adicionalmente en la configuracion se procedera a establecer un limite de intentos de reinicio para evitar
+        bucles infinitos de reinicio.
+    end note
+
     node "Cloud SQL (PostgreSQL)" {
         [User Management DB] <<database>>
         [Subscription Plan DB] <<database>>
