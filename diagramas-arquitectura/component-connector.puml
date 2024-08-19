@@ -307,6 +307,34 @@ note top of "Orchestration"
       minimizando la superficie de ataque y exponiendo solo la información estrictamente necesaria.
 end note
 
+note top of "Orchestration"
+    **Gestión de Sagas y Rollbacks para Asegurar la Transaccionalidad**:
+    
+    - **Sagas**: Los mediadores dentro del módulo de Orquestación (Integration, Portal, Admin Dashboard, Mobile) 
+      implementan Sagas para coordinar operaciones distribuidas. Cada paso de la Saga es una transacción 
+      independiente, con su correspondiente operación de compensación (Rollback) en caso de fallo.
+    
+    - **Rollback (Táctica de Reparación)**: Si una operación dentro de una Saga falla, el mediador 
+      ejecuta un Rollback para deshacer cualquier cambio realizado por transacciones anteriores, 
+      garantizando que el sistema regrese a un estado consistente.
+    
+    - **Transacciones (Táctica de Prevención de Fallas)**: Las Sagas aseguran la transaccionalidad en 
+      un entorno distribuido, donde cada paso es atómico y coherente. Esto previene fallas al asegurar 
+      que un conjunto de operaciones se ejecute completamente o no se ejecute en absoluto, manteniendo 
+      la consistencia del sistema.
+end note
+
+note top of "Orchestration"
+    **Tácticas de (**Disponibilidad**) /Resiliencia Aplicadas en el Módulo de Orquestación**:
+    
+    - **Retry (con Circuit Breakers)**: Los mediadores dentro del módulo de Orquestación 
+      (Integration, Portal, Admin Dashboard, Mobile) implementan la táctica de Retry para 
+      reintentar operaciones fallidas debido a fallos temporales en los servicios backend. 
+      Para evitar ciclos de fallos continuos, los Circuit Breakers se activan después de 
+      múltiples fallos consecutivos, bloqueando temporalmente nuevas solicitudes al servicio 
+      afectado. Esto protege al sistema de sobrecargas y permite que los servicios se recuperen 
+      antes de recibir nuevas solicitudes.
+end note
 ' #######################################################################
 ' SECURITY LAYER
 ' #######################################################################
