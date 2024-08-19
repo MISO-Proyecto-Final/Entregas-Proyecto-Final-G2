@@ -2,14 +2,17 @@
 hide methods
 
 package "Gestión de Clientes" {
+  TipoCliente "1" -- "*" Cliente
   Cliente "1" -- "*" Suscripcion
 }
 
 package "Gestión de Suscripciones" {
+  Servicios "*" -- "*" Plan
   Plan "1" -- "*" Suscripcion
 }
 
 package "Gestión de Incidentes" {
+  Incidente "*" -- "*" Cliente
   Incidente "1" -- "0..1" Llamada
   Incidente "1" -- "*" Mensaje
 }
@@ -17,11 +20,12 @@ package "Gestión de Incidentes" {
 package "Gestión de Usuarios" {
   Usuario "*" -- "*" Cliente
   Usuario "1" -- "*" Incidente
+  Roles "1" -- "*" Usuario
 }
-
 
 package "Facturación" {
   Cliente "1" -- "*" Factura
   Factura "1" -- "*" DetalleFactura
 }
+
 @enduml
