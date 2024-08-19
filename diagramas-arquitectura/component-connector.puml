@@ -73,6 +73,15 @@ package "presentation" {
         "Corresponde en general a los servicios implemetados 
         por los clientes para integrarse con ABCall"
     end note
+    note top of "presentation"
+        **Tácticas de Seguridad Aplicadas en la Capa de Presentación**:
+        **Validate Input**: Desde la perspectiva de las interfaces de usuario (Customer Portal, 
+        Client Admin Dashboard, Mobile App), es crucial validar todos los datos ingresados por 
+        los usuarios antes de enviarlos al backend. Esto incluye la verificación de campos de 
+        formularios, longitud de cadenas, formato de datos y contenido apropiado. La validación 
+        en el frontend no solo mejora la experiencia del usuario al prevenir errores, sino que 
+        también actúa como una primera línea de defensa contra datos maliciosos.
+    end note
 
 ' #######################################################################
 ' GATEWAY LAYER
@@ -379,6 +388,16 @@ note right of "security"
 end note
 
 ' #######################################################################
+' AUTOMATION LAYER
+' #######################################################################
+package automation {
+    component "email processor" {
+        portout incident_process_ap
+    }
+}
+
+
+' #######################################################################
 ' BUSINESS LOGIC LAYER
 ' #######################################################################
 
@@ -548,6 +567,10 @@ generative_ia_orchestrator_port_mm -down-( igenerative_ia_orchestrator
 analytics_engine_port_mm -down-( ianalytics_engine
 
 
+
+
+incident_process_ap -down-( iincident_process
+
 skinparam class {
   ArrowColor #000000
 }
@@ -570,6 +593,17 @@ note bottom of "suscription plan management"
     limites de uso y restricciones.
     Registro de historico de cambios de planes para clientes.
     Selección de planes y configuracion de planes por cliente.
+end note
+
+note bottom of "business logic"
+    **Tácticas de Seguridad Aplicadas en la Capa de Lógica de Negocio**:
+    **Validate Input**: En los componentes de Business Logic (Customer Tenant Management, 
+    User Management, Subscription Plan Management, etc.), validar la entrada es esencial 
+    para garantizar que los datos procesados sean correctos y seguros. Antes de realizar 
+    cualquier operación crítica, como la actualización de datos de clientes o la ejecución 
+    de procesos de facturación, se debe asegurar que la entrada recibida cumpla con las 
+    expectativas del sistema en términos de formato, coherencia y seguridad, evitando así 
+    la corrupción de datos o la generación de errores en el sistema.
 end note
 
 ' #######################################################################
@@ -820,6 +854,34 @@ note bottom of "audit service"
       Estos registros se utilizarán para rastrear el origen de cualquier incidente de seguridad, 
       permitiendo la identificación de actores malintencionados y facilitando la recuperación del sistema.
 end note
+note bottom of "monitoring service"
+    **Tácticas de Disponibilidad Aplicadas en Monitoring Service**:
+    
+    - **Monitor**: El Monitoring Service supervisa en tiempo real los 
+      tiempos de respuesta de los servicios, la latencia de las solicitudes, 
+      y la correcta ejecución de procesos de software críticos. 
+      Esto permite detectar cualquier degradación en el rendimiento o 
+      problemas de disponibilidad que puedan afectar la experiencia del usuario, 
+      generando alertas para tomar medidas correctivas oportunas.
+    
+    - **Condition Monitor**: Además, el Monitoring Service rastrea condiciones 
+      específicas relacionadas con el software, como fallos en la ejecución de 
+      servicios, errores en la lógica de aplicación, o bloqueos en procesos, 
+      activando alertas y mecanismos de mitigación para asegurar que el sistema 
+      mantenga su disponibilidad y rendimiento óptimo.
+end note
+note bottom of "logging service"
+    **Tácticas de Disponibilidad Aplicadas en Logging Service**:
+    
+    - **Exception Detection**: El Logging Service captura y registra todas 
+      las excepciones relacionadas con el software que ocurren durante la 
+      operación del sistema. Esto incluye la detección de errores en la 
+      ejecución de servicios, fallos en transacciones, y problemas de 
+      integridad de datos. Los registros detallados permiten una rápida 
+      identificación y resolución de problemas, minimizando el impacto 
+      en la disponibilidad del sistema.
+end note
+
 ' #######################################################################
 
 @enduml
