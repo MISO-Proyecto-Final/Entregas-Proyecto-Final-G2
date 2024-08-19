@@ -118,6 +118,10 @@ node "Notification Engine" {
     [sendgrid] <<service>>
 }
 
+node "AI Supplier" {
+        [AI engine] <<service>>
+}
+
 [Public Internet Node] -down-> [GCP API Gateway] : https
 [Mobile Devices] -down-> [GCP API Gateway] : https
 
@@ -127,6 +131,8 @@ node "Notification Engine" {
 [Cloud Run] <-up-> [GCP Pub/Sub] : tcp
 [Cloud Run] -down-> [Firebase] : https
 [Cloud Run] -down-> [Notification Engine] : https
+
+[Cloud Run] -down-> [AI Supplier] : https
 
 
 
