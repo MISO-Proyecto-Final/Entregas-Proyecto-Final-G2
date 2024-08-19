@@ -9,27 +9,34 @@ node "GCP Project" {
     node "Cloud Run" {
 
         rectangle mediators {
-            [Mobile] <<mediator>>
-            [Admin Dashboard] <<mediator>>
-            [Portal] <<mediator>>
-            [Integration] <<mediator>>
+            [mobile] <<mediator>>
+            [admin dashboard] <<mediator>>
+            [portal] <<mediator>>
+            [integration] <<mediator>>
         }
 
         rectangle auth {
-            [Authentication Service] <<service>>
-            [Authorization Service] <<service>>
+            [authentication service] <<service>>
+            [authorization service] <<service>>
         }
 
         rectangle "business logic" {
-            [Incident Process Service] <<service>>
-            [Billing Management Service] <<service>>
-            [User Management Service] <<service>>
-            [Suscription Plan Management Service] <<service>>
-            [Analytics Engine] <<service>>
-            [Customer Tenant Management Service] <<service>>
-            [Generative AI Orchestrator] <<service>>
+            [incident Process service] <<service>>
+            [billing management service] <<service>>
+            [user management service] <<service>>
+            [suscription plan management service] <<service>>
+            [analytics engine] <<service>>
+            [customer tenant management service] <<service>>
+            [generative ai orchestrator] <<service>>
         }
-        
+
+        rectangle automation {
+            [email processor] <<service>>
+        }
+
+        [mediators] -down-> [business logic] : grpc
+        [business logic] -right-> [commons] : grpc
+
         rectangle commons {
             [reporting Service] <<service>>
             [audit Service] <<service>>
@@ -76,12 +83,12 @@ node "GCP Project" {
     end note
 
     node "Cloud SQL (PostgreSQL)" {
-        [User Management DB] <<database>>
-        [Subscription Plan DB] <<database>>
-        [Billing DB] <<database>>
-        [Incident Process DB] <<database>>
+        [user management db] <<database>>
+        [subscription plan db] <<database>>
+        [billing db] <<database>>
+        [incident process db] <<database>>
 
-        [Analytics DB] <<database>>
+        [analytics db] <<database>>
     }
 
     node "Redis Cache" {
@@ -117,7 +124,7 @@ node "Notification Engine" {
 [GCP API Gateway] -down-> [Cloud Run] : https
 [Cloud Run] -left-> [Cloud SQL (PostgreSQL)] : jdbc
 [Cloud Run] -down-> [Redis Cache] : tcp
-[Cloud Run] -down-> [GCP Pub/Sub] : tcp
+[Cloud Run] <-up-> [GCP Pub/Sub] : tcp
 [Cloud Run] -down-> [Firebase] : https
 [Cloud Run] -down-> [Notification Engine] : https
 
