@@ -1,0 +1,99 @@
+@startuml deployment-diagram
+skinparam packageStyle rectangle
+
+node "GCP Project" {
+    node "GCP API Gateway" {
+        [API Gateway] <<service>>
+    }
+
+    node "Cloud Run" {
+
+        rectangle mediators {
+            [Mobile] <<mediator>>
+            [Admin Dashboard] <<mediator>>
+            [Portal] <<mediator>>
+            [Integration] <<mediator>>
+        }
+
+        rectangle auth {
+            [Authentication Service] <<service>>
+            [Authorization Service] <<service>>
+        }
+
+        rectangle "business logic" {
+            [Incident Process Service] <<service>>
+            [Billing Management Service] <<service>>
+            [User Management Service] <<service>>
+            [Suscription Plan Management Service] <<service>>
+            [Analytics Engine] <<service>>
+            [Customer Tenant Management Service] <<service>>
+            [Generative AI Orchestrator] <<service>>
+        }
+        
+        rectangle commons {
+            [reporting Service] <<service>>
+            [audit Service] <<service>>
+            [monitoring Service] <<service>>
+            [logging Service] <<service>>
+            [configuration Service] <<service>>
+            [file storage Service] <<service>>
+
+            [notification service] <<service>>
+            [email service] <<service>>
+            [sms service] <<service>>
+            [push notification service] <<service>>
+        }
+
+        
+        
+    }
+
+    node "Cloud SQL (PostgreSQL)" {
+        [User Management DB] <<database>>
+        [Subscription Plan DB] <<database>>
+        [Billing DB] <<database>>
+        [Incident Process DB] <<database>>
+
+        [Analytics DB] <<database>>
+    }
+
+    node "Redis Cache" {
+        [cache service] <<cache>>
+    }
+    
+    node "Public Internet Node" {
+        [customer portal] <<frontend>>
+        [client admin dashboard] <<frontend>>
+    }
+
+    node "GCP Pub/Sub" {
+        [event bus] <<event-bus>>
+    }
+
+    node "Firebase" {
+        [push notification engine] <<service>>
+    }
+}
+
+node "Mobile Devices" {
+    [mobile app] <<frontend>>
+}
+
+node "Notification Engine" {
+    [twillio] <<service>>
+    [sendgrid] <<service>>
+}
+
+[Public Internet Node] -down-> [GCP API Gateway] : https
+[Mobile Devices] -down-> [GCP API Gateway] : https
+
+[GCP API Gateway] -down-> [Cloud Run] : https
+[Cloud Run] -left-> [Cloud SQL (PostgreSQL)] : jdbc
+[Cloud Run] -down-> [Redis Cache] : tcp
+[Cloud Run] -down-> [GCP Pub/Sub] : tcp
+[Cloud Run] -down-> [Firebase] : https
+[Cloud Run] -down-> [Notification Engine] : https
+
+
+
+@enduml
