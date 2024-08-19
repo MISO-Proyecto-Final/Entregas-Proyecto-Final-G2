@@ -35,6 +35,17 @@ package "presentation" {
 ' -----------------------------------------------------------------------
 ' - NOTAS
 ' -----------------------------------------------------------------------
+    
+    note right of "integration service"
+    **Táctica de integrabilidad Aplicada: Adhere to Standards**
+    
+    - El Integration Service y el API Gateway siguen estándares bien definidos 
+      de comunicación y seguridad (como REST, JSON, OAuth) para asegurar la 
+      interoperabilidad entre componentes del sistema. Esto facilita la integración 
+      de servicios y la escalabilidad del sistema, permitiendo que diferentes 
+      componentes trabajen juntos de manera efectiva y sin problemas.
+    end note
+    
     note top of "customer portal"
         Es la interfaz principal utilizada por los clientes 
         para interactuar con los servicios que ofrece el sistema. 
@@ -334,6 +345,28 @@ note top of "Orchestration"
       múltiples fallos consecutivos, bloqueando temporalmente nuevas solicitudes al servicio 
       afectado. Esto protege al sistema de sobrecargas y permite que los servicios se recuperen 
       antes de recibir nuevas solicitudes.
+end note
+
+note bottom of "Orchestration"
+    **Táctica de Performance Aplicada: Limit Even Response con Rate Limiting**:
+    
+    - **Limit Even Response con Rate Limiting**: Los mediadores en el módulo de Orquestación 
+      (Integration, Portal, Admin Dashboard, Mobile) implementan Rate Limiting para controlar 
+      la cantidad de solicitudes que se procesan en un período de tiempo determinado. Esto 
+      asegura que el sistema no se sobrecargue, manteniendo un rendimiento constante y evitando 
+      que un aumento repentino en la carga afecte negativamente la disponibilidad y capacidad 
+      de respuesta de los servicios de backend. Rate Limiting permite que los recursos se utilicen 
+      de manera equitativa y eficiente, protegiendo el sistema de picos de tráfico inesperados.
+end note
+
+note top of "Orchestration"
+    **Táctica de integrabilidad Aplicada: Orchestrate**
+    
+    - Los mediadores dentro del módulo de Orquestación (Integration, Portal, 
+      Admin Dashboard, Mobile) implementan la táctica de Orchestrate para coordinar 
+      las interacciones entre servicios de backend. Esto asegura que las operaciones 
+      que dependen de múltiples servicios se completen de manera exitosa y coherente, 
+      manteniendo la integridad de las transacciones y el flujo de trabajo.
 end note
 ' #######################################################################
 ' SECURITY LAYER
@@ -909,6 +942,26 @@ note bottom of "logging service"
       identificación y resolución de problemas, minimizando el impacto 
       en la disponibilidad del sistema.
 end note
+
+note top of "common"
+    **Táctica de Performance Aplicada en Microservicios Asíncronos**:
+    
+    - **Introduce Concurrency**: Los microservicios que manejan eventos asíncronos, como Logging, Monitoring, 
+      Notification Service, implementan Concurrency para procesar múltiples eventos simultáneamente. Esto mejora 
+      significativamente la eficiencia y la capacidad de respuesta del sistema, permitiendo que el procesamiento 
+      de eventos ocurra en paralelo y asegurando que el sistema pueda manejar altos volúmenes de tráfico sin crear 
+      cuellos de botella.
+end note
+note top of "common"
+    **Táctica integrabilidad Aplicada: Abstract Common Services**
+    
+    - Los componentes de Common Services (como Notification Service, Logging Service, 
+      Monitoring Service, Audit Service) están abstractos de manera que pueden ser 
+      utilizados por otros componentes del sistema sin acoplamiento directo. 
+      Esto mejora la reutilización y flexibilidad del sistema, permitiendo que estos 
+      servicios comunes sean integrados fácilmente en diferentes partes del sistema.
+end note
+
 
 ' #######################################################################
 
