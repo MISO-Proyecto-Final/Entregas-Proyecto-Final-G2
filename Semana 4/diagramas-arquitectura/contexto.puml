@@ -1,0 +1,35 @@
+@startuml context
+'--------------------------------
+' Define actors
+'--------------------------------
+actor "Usuarios Finales" as User
+actor "Empresas Clientes" as Client
+actor "Administradores de ABCall" as Admin
+actor "Google Cloud Services" as GCloud
+actor "Sistemas de Clientes" as ClientSystems
+
+'--------------------------------
+' Define system boundaries
+'--------------------------------
+rectangle "ABCall" {
+    component "Frontend Web (Angular)" as WebApp
+    component "Mobile App (Ionic)" as MobileApp
+    component "Backend (Microservicios)" as Backend
+}
+
+'--------------------------------
+' Define actor-system relationships
+'--------------------------------
+User --> WebApp : Interactúa con
+User --> MobileApp : Interactúa con
+Client --> WebApp : Configuración de flujos y consultas
+Admin --> WebApp : Administración y Monitoreo
+
+'--------------------------------
+' Define system-system relationships
+'--------------------------------
+WebApp --> Backend : Interacciones con Backend
+MobileApp --> Backend : Interacciones con Backend
+Backend --> GCloud : Utiliza servicios de Google Cloud
+Backend --> ClientSystems : Integración y sincronización de datos
+@enduml

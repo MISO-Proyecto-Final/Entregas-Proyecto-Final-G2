@@ -1,0 +1,46 @@
+@startuml
+
+package Presentation
+package gateway {
+    component "api gateway"
+}
+package Orchestration{
+    component "integration" <<mediator>>
+    component "portal" <<mediator>>
+    component "admin dashboard" <<mediator>>
+    component mobile <<mediator>>
+}
+
+
+Presentation ..> "api gateway"
+"api gateway" ..> "integration"
+"api gateway" ..> "portal"
+"api gateway" ..> "admin dashboard"
+"api gateway" ..> mobile
+
+
+
+note right of "api gateway" 
+   El API Gateway actúa como un punto de entrada central para todas 
+   las solicitudes de los clientes y sistemas externos. Funciona 
+   como un proxy inverso, dirigiendo las solicitudes a los servicios
+   apropiados según el tipo de solicitud. Además, gestiona funciones 
+   transversales como la autenticación, autorización, limitación de 
+   tasas, registro de logs y balanceo de carga. 
+   Es crucial para la seguridad y el rendimiento del sistema, asegurando 
+   que solo las solicitudes válidas y seguras lleguen a los servicios internos.
+end note
+
+
+note top of "api gateway"
+    El uso del patrón de API Gateway es crucial en arquitecturas Cloud Native, 
+    ya que centraliza el manejo de solicitudes, simplifica la integración 
+    de servicios, y mejora la seguridad al actuar como un único punto de 
+    entrada para todos los microservicios. Esto permite aplicar políticas 
+    de seguridad, autenticación, autorización y control de tráfico de manera 
+    unificada, garantizando un acceso consistente y seguro a los servicios 
+    distribuidos.
+end note
+
+
+@enduml

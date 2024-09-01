@@ -1,0 +1,20 @@
+@startuml
+
+package Presentation
+package gateway
+package Orchestration
+package security 
+package automation
+package "business logic"
+package common
+
+Presentation ..> gateway
+gateway ..> Orchestration
+Orchestration ..> security
+Orchestration ..> "business logic"
+"business logic" ..> common 
+"business logic" ..> security 
+automation ..> common
+
+
+@enduml

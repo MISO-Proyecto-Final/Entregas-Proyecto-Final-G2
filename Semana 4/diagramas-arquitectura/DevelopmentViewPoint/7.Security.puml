@@ -1,0 +1,58 @@
+@startuml
+
+package Presentation
+package gateway
+package Orchestration
+package security {
+    component "authorization service" 
+    component "authentication service" 
+}
+
+package "business logic"
+
+
+Presentation ..> gateway
+gateway ..> Orchestration
+Orchestration ..> "business logic"
+Orchestration ..> "authorization service"
+Orchestration ..> "authentication service"
+
+"business logic" ..> "authorization service" 
+"business logic" ..> "authentication service" 
+
+note right of "security"
+    **Tácticas de Seguridad Aplicadas en el Proyecto**:
+    
+    - **Identify Actors**: Todos los usuarios y sistemas externos que interactúan con la plataforma 
+      serán identificados antes de acceder a los servicios, asegurando que el sistema pueda reconocer 
+      la fuente de todas las solicitudes.
+    
+    - **Authenticate Actors**: Se implementará autenticación robusta (incluyendo 2FA y contraseñas 
+      seguras) para todas las interfaces del proyecto, como la aplicación móvil, el portal del cliente 
+      y el panel de administración, garantizando que solo los usuarios legítimos accedan al sistema.
+    
+    - **Authorize Actors**: El acceso a funcionalidades y datos específicos estará controlado mediante 
+      políticas de autorización, asegurando que solo usuarios con los permisos adecuados puedan 
+      realizar acciones sensibles, como cambios en configuraciones o acceso a información confidencial.
+    
+    - **Restrict Login**: Se protegerán las interfaces de usuario mediante la restricción de intentos 
+      de inicio de sesión fallidos, bloqueando temporalmente cuentas para prevenir ataques de fuerza 
+      bruta y garantizar la seguridad del acceso.
+end note
+
+note bottom of "authorization service"
+    El servicio de Authorization se encarga de verificar que los usuarios tengan 
+    los permisos adecuados para acceder a recursos específicos. Implementa políticas 
+    de control de acceso basadas en roles (RBAC) y permisos, garantizando que solo 
+    usuarios autorizados puedan realizar ciertas acciones, manteniendo la seguridad 
+    y la integridad del sistema.
+end note
+
+note bottom of "authentication service"
+    El servicio de Authentication gestiona la verificación de identidad de los usuarios 
+    antes de permitirles acceder a los servicios del sistema. Soporta autenticación mediante 
+    contraseñas, autenticación de dos factores (2FA), y tokens, asegurando que solo usuarios 
+    legítimos puedan interactuar con el sistema, protegiendo contra accesos no autorizados.
+end note
+
+@enduml

@@ -1,0 +1,673 @@
+@startuml component-connector
+' #######################################################################
+' # Component Connector
+' #######################################################################
+
+' -----------------------------------------------------------------------
+' - Definir skinparam
+' -----------------------------------------------------------------------
+skinparam packageStyle rectangle
+skinparam component {
+    BackgroundColor<<ExternalComponent>> LightBlue
+    BorderColor<<ExternalComponent>> DarkBlue
+    FontColor<<ExternalComponent>> Black
+}
+
+' #######################################################################
+' PRESENTATION LAYER
+' #######################################################################
+package "presentation" {
+    component "customer portal" {
+        portout gw_portal_port_out
+    }
+    component "client admin dashboard" {
+        portout gw_admin_port_out
+    }
+    component "mobile app" {
+        portout gw_mobile_port_out
+    }
+}
+
+    component "integration service" <<ExternalComponent>>{
+        portout integration_service_port
+    }
+
+' -----------------------------------------------------------------------
+' - NOTAS
+' -----------------------------------------------------------------------
+    
+ 
+    
+
+' #######################################################################
+' GATEWAY LAYER
+' #######################################################################
+
+package gateway {
+    component "api gateway" {
+        portin gw_integration_port
+        portin gw_portal_port
+        portin gw_admin_port
+        portin gw_mobile_port
+        portout iintegration_port_gw
+        portout iportal_port_gw
+        portout imobile_port_gw
+        portout iadmin_port_gw
+    }
+}
+
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
+interface igwportal
+interface igwadmin
+interface igwmobile
+interface igw_integration
+
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
+gw_portal_port -up- igwportal
+gw_admin_port -up- igwadmin
+gw_mobile_port -up- igwmobile
+
+
+gw_portal_port_out -down-( igwportal
+gw_admin_port_out -down-( igwadmin
+gw_mobile_port_out -down-( igwmobile
+
+gw_integration_port -up- igw_integration
+integration_service_port -down-( igw_integration
+
+' -----------------------------------------------------------------------
+' - NOTAS
+' -----------------------------------------------------------------------
+
+
+
+
+
+
+' #######################################################################
+' ORCHESTRATION LAYER
+' #######################################################################
+
+package Orchestration{
+    component "integration" <<mediator>>{
+        portin iintegration_port
+        portout iauth_port_im
+        portout iauthorization_port_im
+        portout icustomer_tenant_management_port_im
+        portout suscription_plan_management_port_im
+        portout user_management_port_im
+        portout billing_management_port_im
+        portout incident_process_port_im
+        portout generative_ia_orchestrator_port_im
+        portout analytics_engine_port_im
+        portout catalog_service_port_im
+    }
+    component "portal" <<mediator>>{
+        portin iportal_port
+        portout iauth_port_pm
+        portout iauthorization_port_pm
+        portout icustomer_tenant_management_port_pm
+        portout suscription_plan_management_port_pm
+        portout user_management_port_pm
+        portout billing_management_port_pm
+        portout incident_process_port_pm
+        portout generative_ia_orchestrator_port_pm
+        portout analytics_engine_port_pm
+        portout catalog_service_port_pm
+    }
+    component "admin dashboard" <<mediator>>{
+        portin iadmin_port
+        portout iauth_port_adm
+        portout iauthorization_port_adm
+        portout icustomer_tenant_management_port_adm
+        portout suscription_plan_management_port_adm
+        portout user_management_port_adm
+        portout billing_management_port_adm
+        portout incident_process_port_adm
+        portout generative_ia_orchestrator_port_adm
+        portout analytics_engine_port_adm
+        portout catalog_service_port_adm
+    }
+    component mobile <<mediator>> {
+        portin imobile_port
+        portout iauth_port_mm
+        portout iauthorization_port_mm
+        portout icustomer_tenant_management_port_mm
+        portout suscription_plan_management_port_mm
+        portout user_management_port_mm
+        portout billing_management_port_mm
+        portout incident_process_port_mm
+        portout generative_ia_orchestrator_port_mm
+        portout analytics_engine_port_mm
+        portout catalog_service_port_mm
+    }
+}
+
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
+interface iintegration
+iintegration_port -up- iintegration
+
+interface iportal
+iportal_port -up- iportal
+
+interface iadmin
+iadmin_port -up- iadmin
+
+interface imobile
+imobile_port -up- imobile
+
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
+imobile_port_gw -down-( imobile
+iadmin_port_gw -down-( iadmin
+iportal_port_gw -down-( iportal
+iintegration_port_gw -down-( iintegration
+
+'-----------------------------------------------------------------------
+' - NOTAS
+'-----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+' #######################################################################
+' SECURITY LAYER
+' #######################################################################
+
+package security {
+    component "authorization service" {
+        port iauthorization_port
+    }
+    component "authentication service" {
+        port iauth_port
+    }
+}
+
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
+interface iauth
+iauth_port -up- iauth
+interface iauthorization
+iauthorization_port -up- iauthorization
+
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
+
+' .......................................................................
+' AUTHENTICATION CONNECTIONS
+' .......................................................................
+iauth_port_im -down-( iauth
+iauth_port_pm -down-( iauth
+iauth_port_adm -down-( iauth
+iauth_port_mm -down-( iauth
+
+' .......................................................................
+' AUTHORIZATION CONNECTIONS
+' .......................................................................
+iauthorization_port_im -down-( iauthorization
+iauthorization_port_pm -down-( iauthorization
+iauthorization_port_adm -down-( iauthorization
+iauthorization_port_mm -down-( iauthorization
+
+' -----------------------------------------------------------------------
+' - NOTAS
+' -----------------------------------------------------------------------
+
+
+
+
+' #######################################################################
+' AUTOMATION LAYER
+' #######################################################################
+package automation {
+    component "email processor" {
+        portout incident_process_ap
+    }
+}
+
+
+' #######################################################################
+' BUSINESS LOGIC LAYER
+' #######################################################################
+
+package "business logic" {
+    component "customer tenant management" {
+        portin customer_tenant_management_port
+        portout ilogging_ctm
+        portout imonitoring_ctm
+        portout ireporting_ctm
+        portout ifile_storage_ctm
+        portout iconfiguration_ctm
+        portout icache_ctm
+        portout inotification_ctm
+        portout iaudit_service_ctm
+    }
+    component "user management" {
+        portin user_management_port
+        portout ilogging_um
+        portout imonitoring_um
+        portout ireporting_um
+        portout ifile_storage_um
+        portout iconfiguration_um
+        portout icache_um
+        portout inotification_um
+        portout iaudit_service_um
+    }
+    component "suscription plan management" {
+        portin suscription_plan_management_port
+        portout ilogging_spm
+        portout imonitoring_spm
+        portout ireporting_spm
+        portout ifile_storage_spm
+        portout iconfiguration_spm
+        portout icache_spm
+        portout inotification_spm
+        portout iaudit_service_spm
+    }
+    component "billing management" {
+        portin billing_management_port
+        portout ilogging_bm
+        portout imonitoring_bm
+        portout ireporting_bm
+        portout ifile_storage_bm
+        portout iconfiguration_bm
+        portout icache_bm
+        portout inotification_bm
+        portout iaudit_service_bm
+    }
+    component "incident process" {
+        portin incident_process_port
+        portout ilogging_ip
+        portout imonitoring_ip
+        portout ireporting_ip
+        portout ifile_storage_ip
+        portout iconfiguration_ip
+        portout icache_ip
+        portout inotification_ip
+        portout iaudit_service_ip
+    }
+
+    component "generative ia orchestrator" {
+        portin generative_ia_orchestrator_port
+        portout ilogging_gio
+        portout imonitoring_gio
+        portout ireporting_gio
+        portout ifile_storage_gio
+        portout iconfiguration_gio
+        portout icache_gio
+        portout inotification_gio
+        portout iaudit_service_gio
+    }
+    component "analytics engine" {
+        portin analytics_engine_port
+        portout ilogging_ae
+        portout imonitoring_ae
+        portout ireporting_ae
+        portout ifile_storage_ae
+        portout iconfiguration_ae
+        portout icache_ae
+        portout inotification_ae
+        portout iaudit_service_ae
+    }
+}
+
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+interface icustomer_tenant_management
+customer_tenant_management_port -up- icustomer_tenant_management
+
+interface iuser_management
+user_management_port -up- iuser_management
+
+interface isuscription_plan_management
+suscription_plan_management_port -up- isuscription_plan_management
+
+interface ibilling_management
+billing_management_port -up- ibilling_management
+
+interface iincident_process
+incident_process_port -up- iincident_process
+
+interface igenerative_ia_orchestrator
+generative_ia_orchestrator_port -up- igenerative_ia_orchestrator
+
+interface ianalytics_engine
+analytics_engine_port -up- ianalytics_engine
+
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
+
+' .......................................................................
+' INTEGRACTION CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #FF5733
+}
+icustomer_tenant_management_port_im -down-( icustomer_tenant_management
+user_management_port_im -down-( iuser_management
+suscription_plan_management_port_im -down-( isuscription_plan_management
+billing_management_port_im -down-( ibilling_management
+incident_process_port_im -down-( iincident_process
+generative_ia_orchestrator_port_im -down-( igenerative_ia_orchestrator
+analytics_engine_port_im -down-( ianalytics_engine
+
+' .......................................................................
+' PORTAL CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #58FF33
+}
+icustomer_tenant_management_port_pm -down-( icustomer_tenant_management
+user_management_port_pm -down-( iuser_management
+suscription_plan_management_port_pm -down-( isuscription_plan_management
+billing_management_port_pm -down-( ibilling_management
+incident_process_port_pm -down-( iincident_process
+generative_ia_orchestrator_port_pm -down-( igenerative_ia_orchestrator
+analytics_engine_port_pm -down-( ianalytics_engine
+
+' .......................................................................
+' ADMIN CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #3347FF
+}
+icustomer_tenant_management_port_adm -down-( icustomer_tenant_management
+user_management_port_adm -down-( iuser_management
+suscription_plan_management_port_adm -down-( isuscription_plan_management
+billing_management_port_adm -down-( ibilling_management
+incident_process_port_adm -down-( iincident_process
+generative_ia_orchestrator_port_adm -down-( igenerative_ia_orchestrator
+analytics_engine_port_adm -down-( ianalytics_engine
+
+' .......................................................................
+' MOBILE CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #FFB133
+}
+icustomer_tenant_management_port_mm -down-( icustomer_tenant_management
+user_management_port_mm -down-( iuser_management
+suscription_plan_management_port_mm -down-( isuscription_plan_management
+billing_management_port_mm -down-( ibilling_management
+incident_process_port_mm -down-( iincident_process
+generative_ia_orchestrator_port_mm -down-( igenerative_ia_orchestrator
+analytics_engine_port_mm -down-( ianalytics_engine
+
+
+
+
+incident_process_ap -down-( iincident_process
+
+skinparam class {
+  ArrowColor #000000
+}
+
+'-----------------------------------------------------------------------
+' - NOTAS
+'-----------------------------------------------------------------------
+
+
+
+
+' #######################################################################
+' COMMON SERVICES
+' #######################################################################
+
+package common {
+    component catalog_service {
+        portin catalog_service_port
+    }
+
+' -----------------------------------------------------------------------
+' - COMPONENTES DE NOTIFICACION
+' -----------------------------------------------------------------------
+    component "notification service" {
+        portin notification_service_port
+        portout email_service_port_out
+        portout sms_service_port_out
+        portout push_notification_service_port_out
+    }
+
+    component "email service" {
+        portin email_service_port
+    }
+
+    interface inotification_email
+    email_service_port -up- inotification_email
+    email_service_port_out -down-( inotification_email
+
+    component "sms service" {
+        portin sms_service_port
+    }
+
+    interface inotification_sms
+    sms_service_port -up- inotification_sms
+    sms_service_port_out -down-( inotification_sms
+
+    component "push notification service" {
+        portin push_notification_service_port
+    }
+
+    interface inotification_push_notification
+    push_notification_service_port -up- inotification_push_notification
+    push_notification_service_port_out -down-( inotification_push_notification
+
+' -----------------------------------------------------------------------
+' - OTROS SERVICIOS COMUNES
+' -----------------------------------------------------------------------
+    
+    component "audit service" {
+        portin audit_service_port
+    }
+    component "logging service" {
+        portin logging_service_port
+    }
+
+    component "monitoring service" {
+        portin monitoring_service_port
+        portout notification_service_port_out_monitoring
+    }
+
+    component "reporting service" {
+        portin reporting_service_port
+    }
+    component "file storage service" {
+        portin file_storage_service_port
+    }
+    component "configuration service" {
+        portin configuration_service_port
+    }
+    component "cache service" {
+        portin cache_service_port
+    }
+}
+
+' -----------------------------------------------------------------------
+' - INTERFACES
+' -----------------------------------------------------------------------
+
+interface icatalog_service
+catalog_service_port -up- icatalog_service
+
+interface iaudit_service
+audit_service_port -up- iaudit_service
+
+interface ilogging
+logging_service_port -up- ilogging
+
+interface imonitoring
+monitoring_service_port -up- imonitoring
+
+interface ireporting
+reporting_service_port -up- ireporting
+
+interface ifile_storage
+file_storage_service_port -up- ifile_storage
+
+interface iconfiguration
+configuration_service_port -up- iconfiguration
+
+interface icache
+cache_service_port -up- icache
+
+interface inotification
+notification_service_port -up- inotification
+
+' -----------------------------------------------------------------------
+' - CONEXIONES
+' -----------------------------------------------------------------------
+
+catalog_service_port_im -down-( icatalog_service
+catalog_service_port_pm -down-( icatalog_service
+catalog_service_port_adm -down-( icatalog_service
+catalog_service_port_mm -down-( icatalog_service
+
+
+' .......................................................................
+' LOGGING CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #FF5733
+}
+ilogging_ctm .down.> ilogging
+ilogging_um .down.> ilogging
+ilogging_spm .down.> ilogging
+ilogging_bm .down.> ilogging
+ilogging_ip .down.> ilogging
+ilogging_gio .down.> ilogging
+ilogging_ae .down.> ilogging
+
+' .......................................................................
+' AUDIT CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #33FFBE
+}
+
+iaudit_service_ctm .down.> iaudit_service
+iaudit_service_um .down.> iaudit_service
+iaudit_service_spm .down.> iaudit_service
+iaudit_service_bm .down.> iaudit_service
+iaudit_service_ip .down.> iaudit_service
+iaudit_service_gio .down.> iaudit_service
+iaudit_service_ae .down.> iaudit_service
+
+
+' .......................................................................
+' MONITORING CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #33FF57
+}
+imonitoring_ctm .down.> imonitoring
+imonitoring_um .down.> imonitoring
+imonitoring_spm .down.> imonitoring
+imonitoring_bm .down.> imonitoring
+imonitoring_ip .down.> imonitoring
+imonitoring_gio .down.> imonitoring
+imonitoring_ae .down.> imonitoring
+
+' .......................................................................
+' REPORTING CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #3357FF
+}
+ireporting_ctm .down.> ireporting
+ireporting_um .down.> ireporting
+ireporting_spm .down.> ireporting
+ireporting_bm .down.> ireporting
+ireporting_ip .down.> ireporting
+ireporting_gio .down.> ireporting
+ireporting_ae .down.> ireporting
+
+' .......................................................................
+' FILE STORAGE CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #FF33A1
+}
+ifile_storage_ctm -down-( ifile_storage
+ifile_storage_um -down-( ifile_storage
+ifile_storage_spm -down-( ifile_storage
+ifile_storage_bm -down-( ifile_storage
+ifile_storage_ip -down-( ifile_storage
+ifile_storage_gio -down-( ifile_storage
+ifile_storage_ae -down-( ifile_storage
+
+' .......................................................................
+' CONFIGURATION CONNECTIONS
+' .......................................................................
+
+skinparam class {
+  ArrowColor #33FFF7
+}
+iconfiguration_ctm -down-( iconfiguration
+iconfiguration_um -down-( iconfiguration
+iconfiguration_spm -down-( iconfiguration
+iconfiguration_bm -down-( iconfiguration
+iconfiguration_ip -down-( iconfiguration
+iconfiguration_gio -down-( iconfiguration
+iconfiguration_ae -down-( iconfiguration
+
+' .......................................................................
+' CACHE CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #FFDD33
+}
+icache_ctm -down-( icache
+icache_um -down-( icache
+icache_spm -down-( icache
+icache_bm -down-( icache
+icache_ip -down-( icache
+icache_gio -down-( icache
+icache_ae -down-( icache
+
+' .......................................................................
+' NOTIFICATION CONNECTIONS
+' .......................................................................
+skinparam class {
+  ArrowColor #9933FF
+}
+notification_service_port_out_monitoring .up.> inotification
+inotification_ctm .down.> inotification 
+inotification_um .down.> inotification 
+inotification_spm .down.> inotification 
+inotification_bm .down.> inotification 
+inotification_ip .down.> inotification 
+inotification_gio .down.> inotification 
+inotification_ae .down.> inotification 
+
+
+' .......................................................................
+' NOTES
+' .......................................................................
+
+
+
+
+
+' #######################################################################
+
+@enduml

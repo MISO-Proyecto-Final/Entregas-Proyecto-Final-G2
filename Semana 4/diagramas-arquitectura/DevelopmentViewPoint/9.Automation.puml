@@ -1,0 +1,29 @@
+@startuml
+
+package security 
+package automation{
+    component "email processor" 
+}
+package "business logic"{
+    component "incident process" 
+}
+package common
+
+
+
+"incident process"  ..> common 
+"incident process"  ..> security 
+"email processor"  --(0--> "incident process" 
+
+
+    note right of "email processor"
+        **email processor** es un componente que se encarga de 
+        procesar los correos electrónicos recibidos por los usuarios 
+        finales de ABCall.
+        Incluye la extracción de información relevante de los correos 
+        electrónicos, la creación de incidentes a partir de los correos 
+        electrónicos y la notificación de los incidentes a los usuarios 
+        correspondientes.
+    end note
+
+@enduml

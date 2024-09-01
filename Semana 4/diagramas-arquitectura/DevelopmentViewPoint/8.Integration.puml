@@ -1,0 +1,36 @@
+@startuml
+
+
+package gateway{
+    component "api gateway"
+}
+package Orchestration{
+    component "integration" <<mediator>>
+}
+package security 
+package "business logic"
+package Cliente{
+
+    component "integration service" <<ExternalComponent>>
+}
+
+"api gateway" ..> "integration"
+"integration" ..> security
+"integration" ..> "business logic"
+"integration service" ..> "api gateway"
+   note right of "integration"
+    **Táctica de integrabilidad Aplicada: Adhere to Standards**
+    
+    - El Integration y el API Gateway siguen estándares bien definidos 
+      de comunicación y seguridad (como REST, JSON, OAuth) para asegurar la 
+      interoperabilidad entre componentes del sistema. Esto facilita la integración 
+      de servicios y la escalabilidad del sistema, permitiendo que diferentes 
+      componentes trabajen juntos de manera efectiva y sin problemas.
+    end note
+    
+    
+    note top of "integration service"
+        "Corresponde en general a los servicios implemetados 
+        por los clientes para integrarse con ABCall"
+    end note
+@enduml

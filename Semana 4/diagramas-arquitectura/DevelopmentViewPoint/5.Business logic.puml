@@ -1,0 +1,87 @@
+@startuml
+
+package Presentation
+package gateway
+package Orchestration
+package security 
+package automation
+package "business logic"{
+    component "customer tenant management" 
+    component "user management" 
+    component "suscription plan management" 
+    component "billing management" 
+    component "incident process"
+    component "generative ia orchestrator" 
+    component "analytics engine"
+}
+package common
+
+Presentation ..> gateway
+gateway ..> Orchestration
+Orchestration ..> security
+Orchestration ..> "business logic"
+"business logic" ..> common 
+"business logic" ..> security 
+automation ..> common
+
+note bottom of "customer tenant management"
+    "customer tenant management" es un componente que 
+    se encarga de gestionar los 
+    clientes de ABCall, sus configuraciones 
+    y el estado general de la suscripción al servicio.
+end note
+
+note top of "suscription plan management"
+    "suscription plan management" Gestiona la informacion y 
+    configuracion de las susbcripciones y planes.
+    Incluye la configuracion de precios,
+    limites de uso y restricciones.
+    Registro de historico de cambios de planes para clientes.
+    Selección de planes y configuracion de planes por cliente.
+end note
+
+note top of "billing management"
+    "billing management" es un componente que se encarga de 
+    gestionar la facturación de los clientes de ABCall.
+    Incluye la generación de facturas y la gestión de pagos.
+end note
+
+note top of "incident process"
+    "incident process" es un componente que se encarga de 
+    gestionar los incidentes reportados por los usuarios finales.
+    Incluye la creación, asignación, seguimiento y cierre de 
+    incidentes, así como la generación de reportes.
+end note
+
+note bottom of "generative ia orchestrator"
+    "generative ia orchestrator" es un componente que se encarga de 
+    orquestar la ejecución de los modelos de IA generativa 
+    para la generación de contenido.
+end note
+
+note top of "analytics engine"
+    "analytics engine" es un componente que se encarga de 
+    procesar y analizar los datos generados por los usuarios 
+    de ABCall para la generación de reportes y dashboards.
+end note
+
+note bottom of "user management"
+    "user management" es un componente que se encarga de 
+    gestionar los usuarios de ABCall, sus roles y permisos.
+    Incluye la creación, edición y eliminación de usuarios, 
+    así como la gestión de roles y permisos.
+
+    Se comunica con el componente de seguridad para la autenticación de usuarios y gestion de sesiones. 
+end note
+
+note bottom of "business logic"
+    **Tácticas de Seguridad Aplicadas en la Capa de Lógica de Negocio**:
+    **Validate Input**: En los componentes de Business Logic (Customer Tenant Management, 
+    User Management, Subscription Plan Management, etc.), validar la entrada es esencial 
+    para garantizar que los datos procesados sean correctos y seguros. Antes de realizar 
+    cualquier operación crítica, como la actualización de datos de clientes o la ejecución 
+    de procesos de facturación, se debe asegurar que la entrada recibida cumpla con las 
+    expectativas del sistema en términos de formato, coherencia y seguridad, evitando así 
+    la corrupción de datos o la generación de errores en el sistema.
+end note
+@enduml

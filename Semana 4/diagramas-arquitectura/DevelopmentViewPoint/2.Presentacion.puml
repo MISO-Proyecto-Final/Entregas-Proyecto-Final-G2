@@ -1,0 +1,93 @@
+
+@startuml
+
+package Presentation{
+  package web{
+    component "customer portal" 
+    component "client admin dashboard" 
+  }
+    component "mobile app" 
+    
+}
+package gateway{
+  package portal_gw
+  package admin_gw
+  package mobile_gw
+}
+package Orchestration{
+    component "portal" <<mediator>>
+    component "admin dashboard" <<mediator>>
+    component mobile <<mediator>> 
+}
+package security 
+
+package "business logic"
+
+
+"customer portal" ..> portal_gw
+portal_gw ..> "portal"
+
+
+"client admin dashboard" ..> admin_gw
+admin_gw ..> "admin dashboard"
+
+"mobile app" ..> mobile_gw
+mobile_gw ..> mobile
+
+
+Orchestration ..> security
+Orchestration ..> "business logic"
+
+
+note top of "customer portal"
+        Es la interfaz principal utilizada por los clientes 
+        para interactuar con los servicios que ofrece el sistema. 
+        Permite a los usuarios gestionar sus cuentas, suscripciones, 
+        acceder a productos, realizar consultas y recibir notificaciones. 
+        Además, es el portal a través del cual los clientes pueden 
+        visualizar y descargar reportes generados por el sistema, 
+        proporcionando acceso a análisis y datos relevantes relacionados 
+        con su uso de los servicios.
+    end note
+    note top of "client admin dashboard"
+        Este componente es un panel de administración utilizado por los 
+        administradores de los clientes para gestionar las configuraciones 
+        específicas del cliente, monitorizar el uso de los servicios, 
+        manejar usuarios internos y configurar políticas y permisos. 
+        Es crucial para la administración interna de las cuentas de clientes, 
+        permitiendo supervisar la actividad y ajustar configuraciones según 
+        las necesidades del cliente.
+    end note
+    note right of "mobile app"
+        La aplicación móvil permite a los usuarios de una empresa cliente de 
+        ABCall interactuar de manera eficiente con los servicios desde 
+        dispositivos móviles. Las funcionalidades principales incluyen la 
+        interacción con un chatbot, consulta del estado de solicitudes, respuesta 
+        a encuestas, creación de incidentes (PQR), y la actualización de datos 
+        personales y preferencias de comunicación. Los usuarios también pueden 
+        visualizar indicadores y tableros de control, acceder a reportes de 
+        llamadas y recibir notificaciones sobre incidentes. Además, ofrece acceso 
+        a servicios de inteligencia artificial generativa, permitiendo que los 
+        usuarios reciban respuestas automatizadas y personalizadas según sus 
+        interacciones. Esta app está diseñada para ser ligera, responsiva y fácil 
+        de usar, asegurando que los usuarios móviles tengan una experiencia fluida 
+        y funcional en cualquier momento y lugar​ .
+    end note
+
+
+note bottom of Presentation
+        **Tácticas de Seguridad Aplicadas en la Capa de Presentación**:
+        **Validate Input**: Desde la perspectiva de las interfaces de usuario (Customer Portal, 
+        Client Admin Dashboard, Mobile App), es crucial validar todos los datos ingresados por 
+        los usuarios antes de enviarlos al backend. Esto incluye la verificación de campos de 
+        formularios, longitud de cadenas, formato de datos y contenido apropiado. La validación 
+        en el frontend no solo mejora la experiencia del usuario al prevenir errores, sino que 
+        también actúa como una primera línea de defensa contra datos maliciosos.
+    end note
+
+
+@enduml
+
+
+
+

@@ -1,0 +1,99 @@
+@startuml
+
+package Presentation
+package gateway
+package Orchestration {
+   component "integration" <<mediator>>{
+        
+    }
+    component "portal" <<mediator>>{
+       
+    }
+    component "admin dashboard" <<mediator>>{
+      
+    }
+    component mobile <<mediator>> {
+       
+    }
+}
+package security 
+
+package "business logic"
+
+
+Presentation ..> gateway
+gateway ..> Orchestration
+integration --(0-- security
+integration --(0-- "business logic"
+portal --(0-- security
+portal --(0-- "business logic"
+"admin dashboard" --(0-- security
+"admin dashboard" --(0-- "business logic"
+mobile --(0-- security
+mobile --(0-- "business logic"
+"business logic" --(0-- security 
+
+
+
+
+note top of "Orchestration"
+    El **patrón Mediator** es esencial en arquitecturas Cloud Native para centralizar la 
+    comunicación entre servicios distribuidos, reduciendo el acoplamiento y 
+    simplificando la coordinación. Los cuatro mediadores en este diseño:
+    
+    - **Integration Mediator**: Coordina la interacción entre el sistema principal y 
+      servicios externos, manejando autenticación, autorización y la gestión de usuarios.
+    
+    - **Portal Mediator**: Media las solicitudes del Customer Portal hacia los servicios 
+      de negocio, asegurando operaciones eficientes y seguras.
+    
+    - **Admin Dashboard Mediator**: Orquesta las interacciones desde el panel de 
+      administración, gestionando configuraciones y políticas de manera coherente.
+    
+    - **Mobile Mediator**: Gestiona las solicitudes desde la aplicación móvil hacia los 
+      servicios de negocio, optimizando la experiencia en dispositivos móviles.
+end note
+
+
+note top of "Orchestration"
+    **Tácticas de (**Disponibilidad**) /Resiliencia Aplicadas en el Módulo de Orquestación**:
+    
+    - **Retry (con Circuit Breakers)**: Los mediadores dentro del módulo de Orquestación 
+      (Integration, Portal, Admin Dashboard, Mobile) implementan la táctica de Retry para 
+      reintentar operaciones fallidas debido a fallos temporales en los servicios backend. 
+      Para evitar ciclos de fallos continuos, los Circuit Breakers se activan después de 
+      múltiples fallos consecutivos, bloqueando temporalmente nuevas solicitudes al servicio 
+      afectado. Esto protege al sistema de sobrecargas y permite que los servicios se recuperen 
+      antes de recibir nuevas solicitudes.
+end note
+
+note left of "Orchestration"
+    **Tácticas de Seguridad Aplicadas en el Módulo de Orquestación**:
+    
+    - **Limit Access**: En el módulo de Orquestación, esta táctica se aplica al garantizar que solo 
+      los mediadores (Integration, Portal, Admin Dashboard, Mobile) puedan interactuar directamente 
+      con los servicios de negocio y backend. Los mediadores controlan el acceso a los recursos, 
+      permitiendo solo lo necesario según las reglas de negocio definidas, protegiendo así 
+      los servicios críticos del acceso no autorizado.
+    
+    - **Limit Exposure**: Esta táctica se implementa limitando la exposición de los servicios backend 
+      solo a través de los mediadores. Los mediadores filtran las solicitudes, asegurando que 
+      los detalles internos del sistema no sean visibles ni accesibles desde el exterior, 
+      minimizando la superficie de ataque y exponiendo solo la información estrictamente necesaria.
+end note
+
+note bottom of "Orchestration"
+    **Táctica de integrabilidad Aplicada: Orchestrate**
+    
+    - Los mediadores dentro del módulo de Orquestación (Integration, Portal, 
+      Admin Dashboard, Mobile) implementan la táctica de Orchestrate para coordinar 
+      las interacciones entre servicios de backend. Esto asegura que las operaciones 
+      que dependen de múltiples servicios se completen de manera exitosa y coherente, 
+      manteniendo la integridad de las transacciones y el flujo de trabajo.
+end note
+
+
+
+
+
+@enduml

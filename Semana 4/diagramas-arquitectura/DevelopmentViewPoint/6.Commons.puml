@@ -1,0 +1,106 @@
+@startuml
+
+
+package "business logic"
+package automation
+package common{
+
+  component catalog_service
+
+' -----------------------------------------------------------------------
+' - COMPONENTES DE NOTIFICACION
+' -----------------------------------------------------------------------
+    component "notification service" 
+    component "email service" 
+    component "sms service" 
+    component "push notification service" 
+
+    "notification service" --(0-- "email service"
+    "notification service" --(0-- "sms service"
+    "notification service" --(0-- "push notification service"
+
+' -----------------------------------------------------------------------
+' - OTROS SERVICIOS COMUNES
+' -----------------------------------------------------------------------
+    
+    component "audit service"
+    component "logging service" 
+    component "monitoring service" 
+
+    component "reporting service" 
+    component "file storage service" 
+    component "configuration service" 
+    component "cache service" 
+
+}
+
+
+
+"business logic" ..> common
+
+
+
+
+automation ..> common
+
+note top of "audit service"
+    **Tácticas de Seguridad Aplicadas en el Proyecto**:
+    
+    - **Nonrepudiation**: El servicio de auditoría garantiza que todas las acciones importantes, 
+      como transacciones y cambios en configuraciones, se registren de manera que no puedan ser 
+      negadas posteriormente. Cada acción registrada incluye identificadores únicos, 
+      marcas de tiempo y detalles relevantes para asegurar que las partes involucradas no puedan 
+      repudiar su participación en la actividad registrada.
+    
+    - **Audit**: El servicio de auditoría mantendrá un registro detallado de las acciones realizadas 
+      en el sistema, incluyendo accesos, modificaciones y transacciones críticas. 
+      Estos registros se utilizarán para rastrear el origen de cualquier incidente de seguridad, 
+      permitiendo la identificación de actores malintencionados y facilitando la recuperación del sistema.
+end note
+note top of "monitoring service"
+    **Tácticas de Disponibilidad Aplicadas en Monitoring Service**:
+    
+    - **Monitor**: El Monitoring Service supervisa en tiempo real los 
+      tiempos de respuesta de los servicios, la latencia de las solicitudes, 
+      y la correcta ejecución de procesos de software críticos. 
+      Esto permite detectar cualquier degradación en el rendimiento o 
+      problemas de disponibilidad que puedan afectar la experiencia del usuario, 
+      generando alertas para tomar medidas correctivas oportunas.
+    
+    - **Condition Monitor**: Además, el Monitoring Service rastrea condiciones 
+      específicas relacionadas con el software, como fallos en la ejecución de 
+      servicios, errores en la lógica de aplicación, o bloqueos en procesos, 
+      activando alertas y mecanismos de mitigación para asegurar que el sistema 
+      mantenga su disponibilidad y rendimiento óptimo.
+end note
+note bottom of "logging service"
+    **Tácticas de Disponibilidad Aplicadas en Logging Service**:
+    
+    - **Exception Detection**: El Logging Service captura y registra todas 
+      las excepciones relacionadas con el software que ocurren durante la 
+      operación del sistema. Esto incluye la detección de errores en la 
+      ejecución de servicios, fallos en transacciones, y problemas de 
+      integridad de datos. Los registros detallados permiten una rápida 
+      identificación y resolución de problemas, minimizando el impacto 
+      en la disponibilidad del sistema.
+end note
+
+note top of "audit service"
+    **Táctica de Performance Aplicada en Microservicios Asíncronos**:
+    
+    - **Introduce Concurrency**: Los microservicios que manejan eventos asíncronos, como Logging, Monitoring, 
+      Notification Service, implementan Concurrency para procesar múltiples eventos simultáneamente. Esto mejora 
+      significativamente la eficiencia y la capacidad de respuesta del sistema, permitiendo que el procesamiento 
+      de eventos ocurra en paralelo y asegurando que el sistema pueda manejar altos volúmenes de tráfico sin crear 
+      cuellos de botella.
+end note
+note right of "common"
+    **Táctica integrabilidad Aplicada: Abstract Common Services**
+    
+    - Los componentes de Common Services (como Notification Service, Logging Service, 
+      Monitoring Service, Audit Service) están abstractos de manera que pueden ser 
+      utilizados por otros componentes del sistema sin acoplamiento directo. 
+      Esto mejora la reutilización y flexibilidad del sistema, permitiendo que estos 
+      servicios comunes sean integrados fácilmente en diferentes partes del sistema.
+end note
+@enduml
