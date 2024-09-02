@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+// Define el paquete para evitar conflictos de nombres
+package orchestration.mediator_portal;
+
+// Define el servicio de autenticación
+service AuthService {
+  // Método para manejar el login
+  rpc Login (LoginRequest) returns (LoginResponse);
+}
+
+// Define el mensaje de solicitud para el login
+message LoginRequest {
+  string email = 1;     // Correo electrónico del usuario
+  string password = 2;  // Contraseña del usuario
+}
+
+// Define el mensaje para los datos del usuario
+message LoginResponse {
+  string id = 1;             // ID del usuario
+  string email = 2;          // Correo electrónico del usuario
+  string token = 3;          // Token de autenticación si el login es exitoso
+}
