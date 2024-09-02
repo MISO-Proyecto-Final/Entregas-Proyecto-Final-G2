@@ -1,0 +1,90 @@
+@startuml deployment-diagram
+skinparam packageStyle rectangle
+
+node "GCP Project" {
+    node "API Gateway" {
+    }
+
+    node "Cloud Run" {
+
+        rectangle mediators {
+        }
+
+        rectangle auth {
+        }
+
+        rectangle "business logic" {
+        }
+
+        rectangle automation {
+        }
+
+        [mediators] -down-> [business logic] : gRPC
+        [business logic] -right-> [commons] : gRPC
+
+        rectangle commons {
+        }
+
+        
+        
+    }
+
+    node "Cloud SQL (PostgreSQL)" {
+    }
+
+    node "Redis Cache" {
+    }
+    
+    node "Public Internet Node" {
+        [customer portal] <<frontend>>
+        [client admin dashboard] <<frontend>>
+    }
+
+    note top of [Public Internet Node]
+        Es la interfaz principal utilizada por los clientes 
+        para gestionar principalmente los incidentes del sistema. 
+        Permite a los usuarios gestionar sus cuentas, suscripciones, 
+        acceder a informacion relevante en cuanto a la atencion de incidentes. 
+        Además, es el portal a través del cual los clientes pueden 
+        visualizar y descargar reportes generados por el sistema, 
+        proporcionando acceso a análisis y datos relevantes relacionados 
+        con su uso de los servicios.
+    end note
+
+    node "GCP Pub/Sub" {
+    }
+
+    node "Firebase" {
+    }
+}
+
+node "Mobile Devices" {
+    [mobile app] <<frontend>>
+}
+
+note top of [Mobile Devices]
+        Es la interfaz mobile utilizada por los usuarios de los clientes de ABCall
+        para gestionar principalmente los incidentes del sistemas.
+    end note
+
+node "Notification Engine" {
+}
+
+node "AI Supplier" {
+}
+
+[Public Internet Node] -down-> [API Gateway] : https
+[Mobile Devices] -down-> [API Gateway] : https
+
+[API Gateway] -down-> [Cloud Run] : gRPC
+[Cloud Run] -left-> [Cloud SQL (PostgreSQL)] : jdbc
+[Cloud Run] -down-> [Redis Cache] : tcp
+[Cloud Run] <-up-> [GCP Pub/Sub] : tcp
+[Cloud Run] -down-> [Firebase] : https
+[Cloud Run] -down-> [Notification Engine] : https
+
+[Cloud Run] -down-> [AI Supplier] : https
+
+
+
+@enduml
