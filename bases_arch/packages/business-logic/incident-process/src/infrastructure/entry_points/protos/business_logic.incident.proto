@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+// Define el paquete para evitar conflictos de nombres
+package business_logic.incident;
+
+// Define el servicio de autenticación
+service IncidentService {
+  // Método para crear un incidente
+  rpc CreateIncident (CreateIncidentRequest) returns (CreateIncidentResponse);
+}
+
+message Customer {
+  string name = 2;      // Nombre del cliente
+  string document = 3;     // Documento del cliente
+  string cellphone = 4;     // Numero telefonico del cliente
+  string email = 5;     // Correo electronico del cliente
+}
+
+// Define el mensaje de solicitud para el login
+message CreateIncidentRequest {
+  string title = 1;     // Correo electrónico del usuario
+  string description = 2;  // Descripcion del incidente
+  Customer customer = 3;  // Informacion del usuario final
+}
+
+// Define el mensaje para los datos del usuario
+message CreateIncidentResponse {
+  string id = 1;             // ID del usuario
+  string message = 2;          // Mensaje de respuesta
+}
