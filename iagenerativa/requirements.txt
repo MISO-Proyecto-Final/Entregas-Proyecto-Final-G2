@@ -1,0 +1,5 @@
+websockets==11.0.3
+sentence-transformers==2.2.2
+numpy==1.25.2
+requests==2.31.0
+faiss-cpu
