@@ -1,6 +1,13 @@
-version: '3.8'
-
 services:
+  pubsub:
+      image: google/cloud-sdk:latest
+      platform: linux/amd64
+      container_name: pubsub_emulator
+      command: gcloud beta emulators pubsub start --project=my-project --host-port=0.0.0.0:8085
+      ports:
+        - "8085:8085"
+      environment:
+        PUBSUB_EMULATOR_HOST: localhost:8085
   db:
     image: postgres:15-alpine
     container_name: postgres_db
@@ -17,3 +24,4 @@ services:
 volumes:
   db_data:
     driver: local
+    
