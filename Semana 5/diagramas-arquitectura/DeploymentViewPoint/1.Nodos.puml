@@ -5,7 +5,7 @@ node "GCP Project" {
     node "API Gateway" {
     }
 
-    node "Cloud Run" {
+    node "Google Kubernetes Engine" {
 
         rectangle mediators {
         }
@@ -57,14 +57,14 @@ node "AI Supplier" {
 [Public Internet Node] -down-> [API Gateway] : https
 [Mobile Devices] -down-> [API Gateway] : https
 
-[API Gateway] -down-> [Cloud Run] : gRPC
-[Cloud Run] -down-> [Cloud SQL (PostgreSQL)] : jdbc
-[Cloud Run] -down-> [Redis Cache] : tcp
-[Cloud Run] <-up-> [GCP Pub/Sub] : tcp
-[Cloud Run] -down-> [Firebase] : https
-[Cloud Run] -down-> [Notification Engine] : https
+[API Gateway] -down-> [Google Kubernetes Engine] : gRPC
+[Google Kubernetes Engine] -down-> [Cloud SQL (PostgreSQL)] : jdbc
+[Google Kubernetes Engine] -down-> [Redis Cache] : tcp
+[Google Kubernetes Engine] <-up-> [GCP Pub/Sub] : tcp
+[Google Kubernetes Engine] -down-> [Firebase] : https
+[Google Kubernetes Engine] -down-> [Notification Engine] : https
 
-[Cloud Run] -down-> [AI Supplier] : https
+[Google Kubernetes Engine] -down-> [AI Supplier] : https
 
 
 
