@@ -1,0 +1,71 @@
+@startuml deployment-diagram
+skinparam packageStyle rectangle
+
+node "GCP Project" {
+    node "API Gateway" {
+    }
+
+    node "Cloud Run" {
+
+        rectangle mediators {
+        }
+
+        rectangle auth {
+        }
+
+        rectangle "business logic" {
+        }
+
+        rectangle automation {
+        }
+
+        [mediators] -down-> [business logic] : gRPC
+        [business logic] -right-> [commons] : gRPC
+
+        rectangle commons {
+        }
+
+        
+        
+    }
+
+    node "Cloud SQL (PostgreSQL)" {
+    }
+
+    node "Redis Cache" {
+    }
+    
+    node "Public Internet Node" {
+    }
+
+    node "GCP Pub/Sub" {
+    }
+
+    node "Firebase" {
+    }
+}
+
+node "Mobile Devices" {
+}
+
+node "Notification Engine" {
+}
+
+node "AI Supplier" {
+}
+
+[Public Internet Node] -down-> [API Gateway] : https
+[Mobile Devices] -down-> [API Gateway] : https
+
+[API Gateway] -down-> [Cloud Run] : gRPC
+[Cloud Run] -down-> [Cloud SQL (PostgreSQL)] : jdbc
+[Cloud Run] -down-> [Redis Cache] : tcp
+[Cloud Run] <-up-> [GCP Pub/Sub] : tcp
+[Cloud Run] -down-> [Firebase] : https
+[Cloud Run] -down-> [Notification Engine] : https
+
+[Cloud Run] -down-> [AI Supplier] : https
+
+
+
+@enduml
