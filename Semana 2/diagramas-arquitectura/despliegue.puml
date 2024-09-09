@@ -6,7 +6,7 @@ node "GCP Project" {
         [API Gateway] <<service>>
     }
 
-    node "Cloud Run" {
+    node "Google Kubernetes Engine" {
 
         rectangle mediators {
             [mobile] <<mediator>>
@@ -55,15 +55,15 @@ node "GCP Project" {
         
     }
 
-    note top of [Cloud Run]
-        **Tacticas de Disponibilidad aplicadas para componentes de Cloud Run**
+    note top of [Google Kubernetes Engine]
+        **Tacticas de Disponibilidad aplicadas para componentes de Google Kubernetes Engine**
         **Ping/Echo: ** El API Gateway actua como un supervisor y se encarga de enviar
-        ping a los servicios desplegados en cloud run. Este gateway, que ya está configurado
+        ping a los servicios desplegados en Google Kubernetes Engine. Este gateway, que ya está configurado
         para manejar el tráfico de entrada, puede emitir solicitudes HTTP (GET o HEAD) a los
-        endpoints de salud de cada servicio de Cloud Run. Es importante mencionar que cada componente
-        de Cloud Run tendra un endpoint de salud que responda a las solicitudes de ping.
+        endpoints de salud de cada servicio de Google Kubernetes Engine. Es importante mencionar que cada componente
+        de Google Kubernetes Engine tendra un endpoint de salud que responda a las solicitudes de ping.
         **Sanity Checking: **
-        - Los servicios desplegados en cloud run validaran las entradas externas (requests),
+        - Los servicios desplegados en Google Kubernetes Engine validaran las entradas externas (requests),
         asegurándo que todos los datos recibidos sean correctos y estén dentro de los rangos esperados antes de
         procesarlos (validaciones de forma de datos de entrada).
         - Cada componente validara los estados internos de cada servicio para evitar propagación
@@ -71,11 +71,11 @@ node "GCP Project" {
         - Cada componente validara que las peticiones se reciban de manera correcta y caso contraro manejara
         las fallas rechazando solicitudes incorrectas, registrando eventos, y activar mecanismos de recuperación.
         **Scalating Restart: **
-        - Los servicios desplegados en cloud run se configuraran que intenten reiniciarse automáticamente
+        - Los servicios desplegados en Google Kubernetes Engine se configuraran que intenten reiniciarse automáticamente
         al detectar una falla.
         - Principalmente el primer reinicio corresponde a un reinicio simple, si esto no resuelve el problema
         se procedera a un reinicio a nivel de contenedor, en caso contrario se procedera con un reinicio completo
-        de cloud run.
+        de Google Kubernetes Engine.
         - La configuracion a nivel de reinicio se monitoreara para registrar cada intento de reinicio y si tuvo exito
         o fracaso.
         - Adicionalmente en la configuracion se procedera a establecer un limite de intentos de reinicio para evitar
@@ -125,14 +125,14 @@ node "AI Supplier" {
 [Public Internet Node] -down-> [GCP API Gateway] : https
 [Mobile Devices] -down-> [GCP API Gateway] : https
 
-[GCP API Gateway] -down-> [Cloud Run] : https
-[Cloud Run] -left-> [Cloud SQL (PostgreSQL)] : jdbc
-[Cloud Run] -down-> [Redis Cache] : tcp
-[Cloud Run] <-up-> [GCP Pub/Sub] : tcp
-[Cloud Run] -down-> [Firebase] : https
-[Cloud Run] -down-> [Notification Engine] : https
+[GCP API Gateway] -down-> [Google Kubernetes Engine] : https
+[Google Kubernetes Engine] -left-> [Cloud SQL (PostgreSQL)] : jdbc
+[Google Kubernetes Engine] -down-> [Redis Cache] : tcp
+[Google Kubernetes Engine] <-up-> [GCP Pub/Sub] : tcp
+[Google Kubernetes Engine] -down-> [Firebase] : https
+[Google Kubernetes Engine] -down-> [Notification Engine] : https
 
-[Cloud Run] -down-> [AI Supplier] : https
+[Google Kubernetes Engine] -down-> [AI Supplier] : https
 
 
 
